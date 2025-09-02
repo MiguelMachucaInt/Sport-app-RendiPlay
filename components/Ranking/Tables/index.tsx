@@ -121,7 +121,7 @@ function TablaRanking({
 						}}
 						onPress={() => {
 							setSelectedBranch(branch)
-							setSelectedCategory(null) // reset categoria al cambiar rama
+							setSelectedCategory(null)
 						}}
 					>
 						<Text
@@ -144,21 +144,25 @@ function TablaRanking({
 					style={{
 						flexDirection: 'row',
 						marginBottom: 16,
-						flexWrap: 'wrap'
+						flexWrap: 'wrap',
+						justifyContent: 'space-between',
+						gap: 8
 					}}
 				>
 					{categories.map((category) => (
 						<TouchableOpacity
 							key={category}
 							style={{
-								padding: 6,
-								marginRight: 8,
-								marginBottom: 8,
+								paddingVertical: 6,
+								paddingHorizontal: 12,
 								backgroundColor:
 									selectedCategory === category
 										? colors.primary.naranja
 										: 'lightgray',
-								borderRadius: 4
+								borderRadius: 4,
+								minWidth: 100,
+								alignItems: 'center',
+								marginBottom: 8
 							}}
 							onPress={() => setSelectedCategory(category)}
 						>
