@@ -1,24 +1,28 @@
 import { stylesHeaders } from '@/assets/customStyles'
-import AntDesign from '@expo/vector-icons/AntDesign'
-import { useRouter, useSegments } from 'expo-router'
+//import AntDesign from '@expo/vector-icons/AntDesign'
+//import { useRouter, useSegments } from 'expo-router'
 import { Platform, Text, View } from 'react-native'
-import IconButton from '../ui/IconButton'
+//import IconButton from '../ui/IconButton'
 import UserMenuIcon from './menuIcon'
 
 interface CustomHeaderProps {
 	title?: string
+	hideBackButton?: boolean
 }
 
-export default function CustomHeader({ title = '' }: CustomHeaderProps) {
-	const segments = useSegments()
+export default function CustomHeader({
+	title = '',
+	hideBackButton = false
+}: CustomHeaderProps) {
+	/* 	const segments = useSegments()
 	const isHomeScreen = segments.length === 2 && segments[1] === '(home)'
-	const router = useRouter()
+	const router = useRouter() */
 
-	const handleGoBack = () => {
+	/* 	const handleGoBack = () => {
 		if (router.canGoBack()) {
 			router.back()
 		}
-	}
+	} */
 
 	return (
 		<View
@@ -27,8 +31,8 @@ export default function CustomHeader({ title = '' }: CustomHeaderProps) {
 				Platform.OS === 'web' ? { backgroundColor: 'black' } : {}
 			]}
 		>
-			<View style={stylesHeaders.iconLeft}>
-				{!isHomeScreen && (
+			{/* 	<View style={stylesHeaders.iconLeft}>
+				{!isHomeScreen && !hideBackButton && (
 					<IconButton
 						icon={
 							<AntDesign
@@ -42,7 +46,7 @@ export default function CustomHeader({ title = '' }: CustomHeaderProps) {
 						}}
 					/>
 				)}
-			</View>
+			</View> */}
 
 			<View style={stylesHeaders.titleContainer}>
 				{title && (

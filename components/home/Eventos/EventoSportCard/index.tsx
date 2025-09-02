@@ -12,7 +12,8 @@ interface EventoSportCardProps {
 }
 function EventoSportCard({ match }: Readonly<EventoSportCardProps>) {
 	const currentWidth = Dimensions.get('screen').width
-	const date = getLuxonDate(match.matchdate)
+	const date = getLuxonDate(match.program_date ?? match.matchdate)
+
 	return (
 		<OurCard style={{ width: currentWidth - currentWidth * 0.1 }}>
 			<SizableText fontWeight={'800'} fontSize={16}>
@@ -20,13 +21,27 @@ function EventoSportCard({ match }: Readonly<EventoSportCardProps>) {
 			</SizableText>
 			<YStack gap={5} paddingBottom={10}>
 				<XStack justifyContent="space-around" marginTop={12}>
-					<SportTeam teamName={match.team_desc1} textProps={{ width: 100, textWrap: 'pretty', textAlign: 'center' }} />
+					<SportTeam
+						teamName={match.team_desc1}
+						textProps={{
+							width: 100,
+							textWrap: 'pretty',
+							textAlign: 'center'
+						}}
+					/>
 					<YStack alignItems="center">
 						<Text>{date.toFormat('dd/MM/yyyy')}</Text>
 						<Text style={{ fontSize: 20 }}>Vs</Text>
-						<Text>{date.toFormat('T')}</Text>
+						<Text>{date.toFormat('hh:mm a')}</Text>
 					</YStack>
-					<SportTeam teamName={match.team_desc2} textProps={{ width: 100, textWrap: 'pretty', textAlign: 'center' }} />
+					<SportTeam
+						teamName={match.team_desc2}
+						textProps={{
+							width: 100,
+							textWrap: 'pretty',
+							textAlign: 'center'
+						}}
+					/>
 				</XStack>
 			</YStack>
 			<SportIcon

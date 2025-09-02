@@ -5,7 +5,7 @@ import { Text } from '@tamagui/web'
 import { StyleSheet } from 'react-native'
 
 interface CardPartidosProps {
-	fechaPartido?: string
+	fechaPartido?: any
 	horaPartido?: string
 	equipo1?: string
 	equipo2?: string
@@ -13,6 +13,7 @@ interface CardPartidosProps {
 	puntosEquipo2?: any
 	walkover?: boolean
 	puntosElo?: any
+	categoria?: string
 }
 function CardPartidos({
 	fechaPartido,
@@ -22,7 +23,8 @@ function CardPartidos({
 	puntosEquipo1,
 	puntosEquipo2,
 	walkover,
-	puntosElo
+	puntosElo,
+	categoria
 }: Readonly<CardPartidosProps>) {
 	const formatDate = (isoDate: string) => {
 		if (!isoDate) return ''
@@ -43,7 +45,6 @@ function CardPartidos({
 	const fechaHoraPartido = isIsoDate
 		? new Date(fechaPartido)
 		: new Date(`${fechaPartido} ${horaPartido}`)
-
 
 	const walkoverEstado = walkover === true ? 'W.O.' : ''
 	const ahora = new Date()
@@ -69,25 +70,32 @@ function CardPartidos({
 	return (
 		<OurCard style={mergeStyles(styles.card, { backgroundColor })}>
 			<XStack style={styles.header}>
-				<Text style={[styles.fecha, { color: textColor }]}>
-					{fechaFormateada}
-				</Text>
+				<XStack style={styles.leftHeader}>
+					<Text style={[styles.fecha, { color: textColor }]}>
+						{fechaFormateada}
+					</Text>
+					<Text style={[styles.categoria, { color: '#000' }]}>
+						{categoria}
+					</Text>
+				</XStack>
 				{/* {mostrarHora && (
 					<Text style={[styles.hora, { color: textColor }]}>
 						{horaFormateada}
 					</Text>
 				)} */}
-				<Text style={[styles.hora, { color: 'red' }]}>
-					{walkoverEstado}
-				</Text>
-				<Text
-					style={[
-						styles.estado,
-						{ backgroundColor, color: textColor }
-					]}
-				>
-					{estado}
-				</Text>
+				<XStack style={styles.rightHeader}>
+					<Text style={[styles.hora, { color: 'red' }]}>
+						{walkoverEstado}
+					</Text>
+					<Text
+						style={[
+							styles.estado,
+							{ backgroundColor, color: textColor }
+						]}
+					>
+						{estado}
+					</Text>
+				</XStack>
 			</XStack>
 
 			<XStack style={styles.content}>
@@ -186,10 +194,26 @@ const styles = StyleSheet.create({
 		borderBottomWidth: 1,
 		borderBottomColor: 'black'
 	},
+	leftHeader: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 8
+	},
+	rightHeader: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		gap: 8
+	},
 	fecha: {
 		fontSize: 14,
 		fontWeight: '500',
 		color: '#555'
+	},
+	categoria: {
+		fontSize: 14,
+		fontWeight: '600',
+		color: '#000',
+		marginHorizontal: 8
 	},
 	hora: {
 		fontSize: 14,

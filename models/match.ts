@@ -6,9 +6,11 @@ export interface Match {
 	team_desc1: string
 	team_id2: string
 	team_desc2: string
-	matchdate: string // ISO date string
+	state: string
+	matchdate: string 
 	sport_id: string
 	sport_desc: string
+	program_date?: string
 }
 
 export interface Partido {
@@ -24,4 +26,6 @@ export interface Partido {
 	walkover: boolean
 	state: string
 	state_desc: string
+	category_desc: string
+	program_date?: string
 }

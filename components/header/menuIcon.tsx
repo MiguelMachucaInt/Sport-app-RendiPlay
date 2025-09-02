@@ -7,15 +7,15 @@ import { router } from 'expo-router'
 import IconButton from '../ui/IconButton'
 import { Menu, MenuItem, MenuItemLabel, MenuSeparator } from '../ui/menu'
 
-interface UserMenuIconProps { }
+interface UserMenuIconProps {}
+
 function UserMenuIcon({ ...props }: Readonly<UserMenuIconProps>) {
-	const { signOut } = useAuthStore()
+	const { signOut, user } = useAuthStore()
 
 	return (
 		<Menu
 			placement="bottom"
 			offset={5}
-			disabledKeys={['Settings']}
 			trigger={({ ...triggerProps }) => {
 				return (
 					<IconButton
@@ -28,33 +28,64 @@ function UserMenuIcon({ ...props }: Readonly<UserMenuIconProps>) {
 			}}
 			style={{ width: 150 }}
 		>
-			<MenuItem
-				key="Add account"
-				textValue="Add account"
-				style={{ gap: 7, width: 0 }}
-				onPress={() => router.push('/perfil')}
-			>
-				<FontAwesome6
-					name="user-gear"
-					size={20}
-					color={colors.primary.naranja}
-				/>
-				<MenuItemLabel size="md">Perfil</MenuItemLabel>
-			</MenuItem>
-			<MenuSeparator />
-			<MenuItem
-				key="Community"
-				textValue="Community"
-				onPress={signOut}
-				style={{ gap: 3 }}
-			>
-				<Ionicons
-					name="log-in-outline"
-					size={24}
-					color={colors.primary.naranja}
-				/>
-				<MenuItemLabel size="md">Cerrar Sesión</MenuItemLabel>
-			</MenuItem>
+			{user ? (
+				<>
+					<MenuItem
+						key="Perfil"
+						textValue="Perfil"
+						style={{ gap: 7 }}
+						onPress={() => router.push('/perfil')}
+					>
+						<FontAwesome6
+							name="user-gear"
+							size={20}
+							color={colors.primary.naranja}
+						/>
+						<MenuItemLabel size="md">Perfil</MenuItemLabel>
+					</MenuItem>
+					<MenuItem
+						key="MisTorneos"
+						textValue="Mis Torneos"
+						onPress={() => router.push('/(main)/(home)/campeonato')}
+						style={{ gap: 7 }}
+					>
+						<FontAwesome6
+							name="trophy"
+							size={20}
+							color={colors.primary.naranja}
+						/>
+						<MenuItemLabel size="md">Mis Torneos</MenuItemLabel>
+					</MenuItem>
+					<MenuSeparator />
+					<MenuItem
+						key="CerrarSesion"
+						textValue="Cerrar sesión"
+						onPress={signOut}
+						style={{ gap: 3 }}
+					>
+						<Ionicons
+							name="log-out-outline"
+							size={24}
+							color={colors.primary.naranja}
+						/>
+						<MenuItemLabel size="md">Cerrar Sesión</MenuItemLabel>
+					</MenuItem>
+				</>
+			) : (
+				<MenuItem
+					key="IniciarSesion"
+					textValue="Iniciar sesión"
+					onPress={() => router.push('/auth')}
+					style={{ gap: 5 }}
+				>
+					<Ionicons
+						name="log-in-outline"
+						size={24}
+						color={colors.primary.naranja}
+					/>
+					<MenuItemLabel size="md">Iniciar Sesión</MenuItemLabel>
+				</MenuItem>
+			)}
 		</Menu>
 	)
 }

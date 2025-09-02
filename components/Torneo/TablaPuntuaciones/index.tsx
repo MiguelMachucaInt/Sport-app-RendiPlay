@@ -3,11 +3,12 @@ import OurTouchable from '@/components/Touchable'
 import OurButton from '@/components/ui/ourButton'
 import { SportHandler } from '@/controllers/sportHandler'
 import PuntuacionesService from '@/services/puntuacion'
+import CategorySexService from '@/services/sexbranch'
 import { mergeStyles } from '@/utils/styles'
 import { YStack } from '@tamagui/stacks'
 import { useQuery } from '@tanstack/react-query'
 import { useLocalSearchParams } from 'expo-router'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
 interface TablaPuntuacionesProps {}
@@ -16,8 +17,8 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 	const { tournamentId } = useLocalSearchParams<{ tournamentId: string }>()
 	const [refreshing, setRefreshing] = useState(false)
 
-	const [categoriaActual, setCategoriaActual] = useState('PREMIER')
-	const [sexoActual, setSexoActual] = useState('DAMAS')
+	const [categoriaActual, setCategoriaActual] = useState('')
+	const [sexoActual, setSexoActual] = useState('')
 
 	const { data, isFetching, refetch } = useQuery({
 		queryKey: ['puntuacion', tournamentId],
@@ -25,6 +26,30 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 			tournamentId ? PuntuacionesService.getPuntuacion(tournamentId) : []
 	})
 
+	const { data: categoriesWithSex } = useQuery({
+		queryKey: ['categoriesWithSex', tournamentId],
+		queryFn: () => CategorySexService.getSexBranches(tournamentId),
+		enabled: !!tournamentId
+	})
+
+	useEffect(() => {
+		if (
+			categoriesWithSex?.length &&
+			!categoriesWithSex.includes(sexoActual)
+		) {
+			setSexoActual(categoriesWithSex[0] as string)
+		}
+	}, [categoriesWithSex])
+
+	function getCategoryColor(cat: string) {
+		const catUpper = cat.toUpperCase()
+		if (catUpper.includes('PREMIER')) return '#fcba03' // amarillo
+		if (catUpper.includes('CHALLENGER')) return '#2a5bb0' // azul
+		if (catUpper.includes('NOVICE')) return '#32a852' // verde
+		if (catUpper.includes('SERIE A')) return '#fcba03' // amarillo como ejemplo
+		if (catUpper.includes('SERIE B')) return '#2a5bb0' // azul
+		return '#888' // gris oscuro
+	}
 	function handleRefresh() {
 		setRefreshing(true)
 		refetch().finally(() => setRefreshing(false))
@@ -40,7 +65,6 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 			data?.[0]?.tournament_type === 'WALLY_TOURNAMENT'
 				? ['PREMIER', 'CHALLENGER', 'NOVICE']
 				: []
-
 		return Array.from(set).sort((a, b) => {
 			const indexA = order.indexOf(a.toUpperCase())
 			const indexB = order.indexOf(b.toUpperCase())
@@ -54,15 +78,6 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 		})
 	}, [data])
 
-	const sexos = useMemo(() => {
-		const set = new Set<string>()
-		data?.forEach((item) => {
-			const [, sex] = item.category_desc.split(' - ')
-			set.add(sex)
-		})
-		return Array.from(set)
-	}, [data])
-
 	const tournamentType =
 		data?.[0]?.tournament_type === 'WALLY_TOURNAMENT' ? 'WALLY' : 'futbol'
 
@@ -70,39 +85,51 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 
 	const dataFiltrada = useMemo(() => {
 		if (!Array.isArray(data)) return []
-		let filtered = data.filter((item) => {
-			const [cat, sex] = item.category_desc.split(' - ')
-			return cat === categoriaActual && sex === sexoActual
+
+		let filtered = data.filter((item: any) => {
+			if (!item.category_desc) return false
+
+			const parts = item.category_desc.split(' - ')
+			const cat = parts[0]?.trim().toUpperCase()
+			const sex = parts[1]?.trim().toUpperCase() || 'MIXTO'
+
+			if (cat !== categoriaActual.trim().toUpperCase()) return false
+			if (sex === 'MIXTO') return true
+
+			return sex === sexoActual.trim().toUpperCase()
 		})
+
 		filtered.sort((a, b) => {
 			if (Number(b.resultpoints) !== Number(a.resultpoints)) {
 				return Number(b.resultpoints) - Number(a.resultpoints)
 			}
-
 			const diffSetsA =
 				(Number(a.setGanados) || 0) - (Number(a.setPerdidos) || 0)
 			const diffSetsB =
 				(Number(b.setGanados) || 0) - (Number(b.setPerdidos) || 0)
-
-			if (diffSetsA !== diffSetsB) {
-				return diffSetsB - diffSetsA
-			}
-
+			if (diffSetsA !== diffSetsB) return diffSetsB - diffSetsA
 			const diffPointsA =
 				(Number(a.puntosGanados) || 0) - (Number(a.puntosPerdidos) || 0)
 			const diffPointsB =
 				(Number(b.puntosGanados) || 0) - (Number(b.puntosPerdidos) || 0)
-
-			if (diffPointsA !== diffPointsB) {
-				return diffPointsB - diffPointsA
-			}
-
+			if (diffPointsA !== diffPointsB) return diffPointsB - diffPointsA
 			return 0
 		})
 
 		return filtered
 	}, [data, categoriaActual, sexoActual])
 
+	useEffect(() => {
+		if (categorias.length && !categoriaActual) {
+			setCategoriaActual(categorias[0])
+		}
+	}, [categorias])
+
+	useEffect(() => {
+		if (categoriesWithSex?.length && !sexoActual) {
+			setSexoActual(categoriesWithSex[0] as string)
+		}
+	}, [categoriesWithSex])
 	return !isFetching ? (
 		<YStack
 			style={{
@@ -128,13 +155,7 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 				>
 					{categorias.map((cat) => {
 						const isSelected = cat === categoriaActual
-						const color = cat.toUpperCase().includes('PREMIER')
-							? '#fcba03'
-							: cat.toUpperCase().includes('CHALLENGER')
-								? '#2a5bb0'
-								: cat.toUpperCase().includes('NOVICE')
-									? '#32a852'
-									: ''
+						const color = getCategoryColor(cat)
 						return (
 							<View key={cat}>
 								<OurTouchable
@@ -169,15 +190,16 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 					gap: 3
 				}}
 			>
-				{sexos.map((sexo) => {
+				{categoriesWithSex?.map((sexo) => {
+					console.log('sexo', sexo)
 					const isSelectedSexos = sexo === sexoActual
 					return (
-						<View key={sexo}>
+						<View key={sexo as string}>
 							<OurButton
-								onPress={() => setSexoActual(sexo)}
+								onPress={() => setSexoActual(sexo as string)}
 								variant={isSelectedSexos ? 'solid' : 'outline'}
 							>
-								{sexo}
+								{sexo as string}
 							</OurButton>
 						</View>
 					)

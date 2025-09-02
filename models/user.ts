@@ -23,6 +23,7 @@ export interface UserSports {
 	sports_points: SportPoint[]
 	sports: Sport[]
 	SportVictories: any[]
+	
 }
 
 export interface CreateUserData {

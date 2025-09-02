@@ -5,7 +5,7 @@ export interface Tournament {
 	tournament_desc: string
 	sport_desc: string
 	sport_id: string
-	from_date: string // ISO date string
+	from_date: string 
 	equipos: string
 	categories: Category[]
 	levels: Level[]

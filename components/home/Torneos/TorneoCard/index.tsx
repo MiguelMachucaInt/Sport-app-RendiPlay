@@ -35,15 +35,13 @@ function TorneoCard({ data }: Readonly<TorneoCardProps>) {
 					gap: 7
 				}}
 			>
-				<YStack alignItems='center'>
+				<YStack alignItems="center">
 					<SizableText fontWeight={'900'} fontSize={isIos ? 16 : 20}>
 						{data.tournament_desc}
 					</SizableText>
 					<SizableText fontSize={12} fontStyle="italic">
 						Iniciado el{' '}
-						{getLuxonDate(data.from_date).toFormat(
-							'dd/MM/yyyy'
-						)}
+						{getLuxonDate(data.from_date).toFormat('dd/MM/yyyy')}
 					</SizableText>
 				</YStack>
 

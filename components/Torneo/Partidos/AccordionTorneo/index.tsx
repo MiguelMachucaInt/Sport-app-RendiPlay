@@ -23,6 +23,7 @@ interface Partido {
 	resultpoints1: string
 	resultpoints2: string
 	walkover: boolean
+	category_desc: string
 }
 
 interface AccordionTorneoProps {
@@ -81,19 +82,22 @@ function AccordionTorneo({ dataPartidos }: Readonly<AccordionTorneoProps>) {
 							>
 								Partidos Programados
 							</AccordionTitleText>
-							<AccordionIcon
-								as={AntDesign}
-								name={isExpanded ? 'up' : 'down'}
-								size="xl"
-								color="black"
-							/>
+							<AccordionIcon>
+								<AntDesign
+									name={isExpanded ? 'up' : 'down'}
+									size={24}
+									color="black"
+								/>
+							</AccordionIcon>
 						</XStack>
 					</AccordionTrigger>
 				</AccordionHeader>
 				<AccordionContent>
-					<AccordionContentText style={{ marginTop: 20 }}>
+					<AccordionContentText
+						style={{ marginTop: 20, paddingBottom: 40 }}
+					>
 						<YStack>
-							{Object.entries(partidosPorFecha).map(
+							{Object.entries(partidosPorFecha ?? {}).map(
 								([fecha, partidos]) => (
 									<YStack key={fecha} marginBottom="$4">
 										{partidos.map((partido) => (
@@ -107,6 +111,9 @@ function AccordionTorneo({ dataPartidos }: Readonly<AccordionTorneoProps>) {
 												}
 												puntosEquipo2={
 													partido.resultpoints2
+												}
+												categoria={
+													partido.category_desc
 												}
 											/>
 										))}

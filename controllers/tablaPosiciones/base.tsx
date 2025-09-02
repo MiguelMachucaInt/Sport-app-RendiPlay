@@ -39,18 +39,16 @@ export abstract class TablaPosicionesBuilder implements Builder<ReactNode> {
 								<Text style={styles.positionNumber}>
 									{index + 1}.
 								</Text>
-								<ShadowScrollView
-									horizontal
-									showsHorizontalScrollIndicator={false}
-									containerStyles={{ flex: 1 }}
-								>
-									<YStack gap={1}>
-										<Text style={styles.teamName}>
-											{item.team_desc}
-										</Text>
-									</YStack>
-									<Text></Text>
-								</ShadowScrollView>
+								<YStack gap={1} style={{ flex: 1 }}>
+									<Text
+										style={styles.teamName}
+										numberOfLines={3} // permite hasta 2 líneas
+										ellipsizeMode="tail" // pone "..." si es demasiado largo
+									>
+										{item.team_desc}
+									</Text>
+								</YStack>
+								<Text></Text>
 							</XStack>
 						)}
 						contentContainerStyle={styles.listContent}
@@ -131,7 +129,7 @@ const styles = StyleSheet.create({
 	headerContainer: {
 		alignItems: 'center',
 		paddingLeft: 8,
-		gap: 4,
+		gap: 4
 	},
 	teamHeader: {
 		alignItems: 'flex-start',
@@ -143,11 +141,12 @@ const styles = StyleSheet.create({
 		marginTop: 16
 	},
 	listContent: {
-		paddingHorizontal: 8,
+		paddingHorizontal: 8
 	},
 	teamCell: {
 		paddingLeft: 8,
-		marginRight: 12
+		marginRight: 12,
+		minHeight: 60
 	},
 	positionNumber: {
 		marginRight: 8,
@@ -160,8 +159,10 @@ const styles = StyleSheet.create({
 		fontSize: 14,
 		color: '#222',
 		flexShrink: 1,
+		flexWrap: 'wrap',
 		marginTop: 27,
-		fontWeight: '500'
+		fontWeight: '500',
+		maxWidth: TEAM_COLUMN_WIDTH - 30
 	},
 	trendIcon: {
 		marginLeft: 8
@@ -170,5 +171,6 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		paddingVertical: 12,
 		gap: 4,
+		minHeight: 60
 	}
 })

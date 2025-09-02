@@ -62,11 +62,9 @@ export default function ProfileScreen() {
 						Fecha Nacimiento
 					</Text>
 					<Text style={[stylesProfile.dataValue, { width: 300 }]}>
-						{
-							data?.birthdate ?
-								`${getLuxonDate(data?.birthdate).toFormat('DDD')} (${getAgeFromBirthDate(data?.birthdate)} años)` : null
-
-						}
+						{data?.birthdate
+							? `${getLuxonDate(data?.birthdate).toFormat('DDD')} (${getAgeFromBirthDate(data?.birthdate)} años)`
+							: null}
 					</Text>
 				</View>
 

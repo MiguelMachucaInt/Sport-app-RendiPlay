@@ -7,10 +7,10 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Stack } from 'expo-router'
 import { Image, View } from 'react-native'
 
-interface MainLayoutProps { }
+interface MainLayoutProps {}
 function MainLayout({ ...props }: Readonly<MainLayoutProps>) {
 	return (
-		<ProtectedRoute redirectTo={'/auth'}>
+		<ProtectedRoute redirectTo={'/(main)/(home)'}>
 			<View
 				style={{
 					flex: 1,

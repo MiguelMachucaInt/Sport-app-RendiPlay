@@ -120,6 +120,7 @@ function PartidosTab() {
 							puntosEquipo1={partido.resultpoints1}
 							puntosEquipo2={partido.resultpoints2}
 							puntosElo={partido.elo_points}
+							categoria={partido.category_desc}
 						/>
 					)
 				}}
@@ -132,7 +133,7 @@ function PartidosTab() {
 				contentContainerStyle={{
 					paddingTop: 10,
 					paddingHorizontal: 5,
-					paddingBottom: 120
+					paddingBottom: 220
 				}}
 			/>
 		</YStack>
