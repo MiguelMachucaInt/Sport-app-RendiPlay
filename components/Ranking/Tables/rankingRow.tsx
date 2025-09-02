@@ -1,5 +1,4 @@
 import { colors } from '@/assets/colors/styles'
-import { ShadowScrollView } from '@/components/ShadowScrollView'
 import { Ranking } from '@/services/rating'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
@@ -10,13 +9,13 @@ const trendIcons = {
 	up: <AntDesign name="caretup" size={16} color={colors.others.verde} />,
 	down: <AntDesign name="caretdown" size={16} color={colors.others.rojo} />,
 	equal: <FontAwesome5 name="equals" size={16} color="#fcba03" />
-
 }
 
 interface RankingRowProps {
 	ranking: Ranking
 	index: number
 }
+
 function RankingRow({ ranking, index }: Readonly<RankingRowProps>) {
 	let rankingIcon
 	if (ranking.last_position) {
@@ -28,6 +27,7 @@ function RankingRow({ ranking, index }: Readonly<RankingRowProps>) {
 			rankingIcon = trendIcons.equal
 		}
 	}
+
 	return (
 		<XStack
 			style={{
@@ -36,34 +36,35 @@ function RankingRow({ ranking, index }: Readonly<RankingRowProps>) {
 				backgroundColor: 'transparent'
 			}}
 		>
-			<XStack
-				width={'80%'}
-				alignItems='center'
-			>
+			<XStack width="80%" alignItems="center">
 				<Text style={styles.positionNumber}>{index + 1}.</Text>
-				<ShadowScrollView
-					horizontal
-					showsHorizontalScrollIndicator={false}
-					containerStyles={{ flex: 1 }}
+				<YStack gap={3} style={{ flex: 1 }}>
+					<Text
+						style={styles.teamName}
+						numberOfLines={0}
+						ellipsizeMode="tail"
+					>
+						{ranking.team_desc}
+					</Text>
+					<Text style={styles.categoryName}>
+						({ranking.category_desc})
+					</Text>
+				</YStack>
+				<View
+					style={{
+						marginLeft: 8,
+						width: '20%',
+						alignItems: 'center'
+					}}
 				>
-					<YStack gap={3}>
-						<Text style={{ fontSize: 13 }}>
-							{ranking.team_desc}
-						</Text>
-						<Text style={{ fontStyle: 'italic', fontSize: 10 }}>({ranking.category_desc})</Text>
-					</YStack>
-				</ShadowScrollView>
-				<View style={{ marginLeft: 8, width: '20%', alignItems: 'center' }}>
 					{rankingIcon}
 				</View>
 			</XStack>
 
 			<View style={{ alignItems: 'center', width: '20%' }}>
-				<Text style={{ fontWeight: '800', fontSize: 16 }}>
-					{ranking.points}
-				</Text>
+				<Text style={styles.points}>{ranking.points}</Text>
 			</View>
-		</XStack >
+		</XStack>
 	)
 }
 
@@ -75,7 +76,17 @@ const styles = StyleSheet.create({
 		color: '#444'
 	},
 	teamName: {
-		fontSize: 13
+		fontSize: 13,
+		flexWrap: 'wrap',
+		flexShrink: 1
+	},
+	categoryName: {
+		fontStyle: 'italic',
+		fontSize: 10
+	},
+	points: {
+		fontWeight: '800',
+		fontSize: 16
 	}
 })
 
