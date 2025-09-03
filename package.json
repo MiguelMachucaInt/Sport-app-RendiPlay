@@ -82,6 +82,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@react-native-community/cli": "^20.0.1",
     "@types/lodash": "^4.17.16",
     "@types/luxon": "^3.6.2",
     "@types/react": "~19.0.10",
