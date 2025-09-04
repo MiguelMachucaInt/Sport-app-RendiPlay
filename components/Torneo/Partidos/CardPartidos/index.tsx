@@ -34,7 +34,7 @@ function CardPartidos({
 		: null
 	const fechaFormateada = fecha ? fecha.toFormat('dd/MM/yyyy') : ''
 
-	//const horaFormateada = fecha ? fecha.toFormat('HH:mm') : ''
+	const horaFormateada = fecha ? fecha.toFormat('HH:mm') : ''
 
 	let estado = 'Pasado'
 	let backgroundColor = '#d6d6d6'
@@ -89,11 +89,7 @@ function CardPartidos({
 						{categoria}
 					</Text>
 				</XStack>
-				{/* {mostrarHora && (
-					<Text style={[styles.hora, { color: textColor }]}>
-						{horaFormateada}
-					</Text>
-				)} */}
+
 				<XStack style={styles.rightHeader}>
 					<Text style={[styles.hora, { color: 'red' }]}>
 						{walkoverEstado}
@@ -140,10 +136,35 @@ function CardPartidos({
 					</Text>
 				</YStack>
 
-				<YStack style={styles.scoreContainer}>
-					<Text style={styles.score}>
-						{puntosEquipo1} - {puntosEquipo2}
-					</Text>
+				<YStack style={{ alignItems: 'center' }}>
+					{/* Marcador */}
+					<XStack
+						style={{
+							justifyContent: 'center',
+							alignItems: 'center'
+						}}
+					>
+						<Text style={styles.score}>{puntosEquipo1}</Text>
+						<Text style={styles.score}> - </Text>
+						<Text style={styles.score}>{puntosEquipo2}</Text>
+					</XStack>
+
+					{/* Hora */}
+					{horaFormateada && (
+						<Text
+							style={[
+								styles.hora,
+								{
+									color: textColor,
+									textAlign: 'center',
+									marginTop: 2,
+									marginLeft: 16
+								}
+							]}
+						>
+							{horaFormateada}
+						</Text>
+					)}
 				</YStack>
 
 				<YStack style={styles.teamWrapper}>
@@ -228,6 +249,7 @@ const styles = StyleSheet.create({
 	},
 	hora: {
 		fontSize: 14,
+		marginTop: 4,
 		fontWeight: '500',
 		color: '#555',
 		marginRight: 14
@@ -251,7 +273,8 @@ const styles = StyleSheet.create({
 	scoreContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
-		minWidth: 80
+		minWidth: 80,
+		flexDirection: 'column'
 	},
 	score: {
 		fontSize: 24,

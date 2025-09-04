@@ -67,7 +67,7 @@ function StatsComponent({
 		return (
 			<View style={stylesProfile.statsWrapper}>
 				<Text style={{ textAlign: 'center', padding: 20 }}>
-					No hay estadísticas disponibles
+					Sin Campeonatos Ganados Todavía
 				</Text>
 			</View>
 		)

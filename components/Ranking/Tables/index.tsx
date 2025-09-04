@@ -145,7 +145,7 @@ function TablaRanking({
 						flexDirection: 'row',
 						marginBottom: 16,
 						flexWrap: 'wrap',
-						justifyContent: 'space-between',
+						justifyContent: 'space-evenly',
 						gap: 8
 					}}
 				>
