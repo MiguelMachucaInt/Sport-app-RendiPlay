@@ -12,7 +12,9 @@ interface EventoSportCardProps {
 }
 function EventoSportCard({ match }: Readonly<EventoSportCardProps>) {
 	const currentWidth = Dimensions.get('screen').width
-	const date = getLuxonDate(match.program_date ?? match.matchdate)
+	const date = getLuxonDate(match.program_date ?? match.matchdate, {
+		utc: true
+	})
 
 	return (
 		<OurCard style={{ width: currentWidth - currentWidth * 0.1 }}>
@@ -24,20 +26,20 @@ function EventoSportCard({ match }: Readonly<EventoSportCardProps>) {
 					<SportTeam
 						teamName={match.team_desc1}
 						textProps={{
-							width: 100,
+							width: 70,
 							textWrap: 'pretty',
 							textAlign: 'center'
 						}}
 					/>
 					<YStack alignItems="center">
-						<Text>{date.toFormat('dd/MM/yyyy')}</Text>
+						<Text>{date.toUTC().toFormat('dd/MM/yyyy')}</Text>
 						<Text style={{ fontSize: 20 }}>Vs</Text>
-						<Text>{date.toFormat('hh:mm a')}</Text>
+						<Text>{date.toUTC().toFormat('HH:mm')}</Text>
 					</YStack>
 					<SportTeam
 						teamName={match.team_desc2}
 						textProps={{
-							width: 100,
+							width: 70,
 							textWrap: 'pretty',
 							textAlign: 'center'
 						}}

@@ -7,16 +7,15 @@ export function getLuxonDate(
 	date: string | Date,
 	options?: GetLuxonDateParams
 ) {
-	let zone
-	let luxonDate: DateTime<true> | DateTime<false>
-	if (options?.utc ?? true) zone = 'utc'
-	if (date instanceof Date) {
-		luxonDate = DateTime.fromJSDate(date, { zone }).setLocale('es')
-	} else {
-		luxonDate = DateTime.fromISO(date, { zone }).setLocale('es')
-	}
-	return luxonDate
+  let luxonDate: DateTime
+  if (date instanceof Date) {
+    luxonDate = DateTime.fromJSDate(date, { zone: 'utc' }) // 👈 siempre utc interno
+  } else {
+    luxonDate = DateTime.fromISO(date, { zone: 'utc' }) // 👈 siempre utc interno
+  }
+  return luxonDate.setLocale('es')
 }
+
 
 export function getAgeFromBirthDate(birthDate: string | Date): number {
 	const luxonDate = getLuxonDate(birthDate)

@@ -1,4 +1,5 @@
 import OurCard from '@/components/ui/ourCard'
+import { getLuxonDate } from '@/utils/date'
 import { mergeStyles } from '@/utils/styles'
 import { XStack, YStack } from '@tamagui/stacks'
 import { Text } from '@tamagui/web'
@@ -14,6 +15,7 @@ interface CardPartidosProps {
 	walkover?: boolean
 	puntosElo?: any
 	categoria?: string
+	state?: string
 }
 function CardPartidos({
 	fechaPartido,
@@ -24,34 +26,43 @@ function CardPartidos({
 	puntosEquipo2,
 	walkover,
 	puntosElo,
-	categoria
+	categoria,
+	state
 }: Readonly<CardPartidosProps>) {
-	const formatDate = (isoDate: string) => {
-		if (!isoDate) return ''
+	const fecha = fechaPartido
+		? getLuxonDate(fechaPartido, { utc: true })
+		: null
+	const fechaFormateada = fecha ? fecha.toFormat('dd/MM/yyyy') : ''
 
-		const date = new Date(isoDate)
-		const day = date.getDate().toString().padStart(2, '0')
-		const month = (date.getMonth() + 1).toString().padStart(2, '0')
-		const year = date.getFullYear()
+	//const horaFormateada = fecha ? fecha.toFormat('HH:mm') : ''
 
-		return `${day}/${month}/${year}`
+	let estado = 'Pasado'
+	let backgroundColor = '#d6d6d6'
+	let textColor = '#000000'
+
+	if (state) {
+		if (state === 'F') {
+			estado = 'Finalizado'
+			backgroundColor = '#d6d6d6'
+			textColor = '#000'
+		} else if (state === 'P') {
+			estado = 'Próximo'
+			backgroundColor = '#f3f4ef'
+			textColor = '#2ad14c'
+		} else {
+			estado = 'En juego'
+			backgroundColor = '#f39c12'
+			textColor = '#fff'
+		}
+	} else if (fecha) {
+		const ahora = getLuxonDate(new Date(), { utc: true }).toUTC()
+		const esProximo = fecha > ahora
+		estado = esProximo ? 'Próximo' : 'Pasado'
+		backgroundColor = esProximo ? '#2ad14c' : '#d6d6d6'
+		textColor = esProximo ? '#fff' : '#2ad14c'
 	}
 
-	const isIsoDate = fechaPartido?.includes('T')
-
-	const fechaFormateada = isIsoDate ? formatDate(fechaPartido) : fechaPartido
-
-	// Determinar estado del partido
-	const fechaHoraPartido = isIsoDate
-		? new Date(fechaPartido)
-		: new Date(`${fechaPartido} ${horaPartido}`)
-
 	const walkoverEstado = walkover === true ? 'W.O.' : ''
-	const ahora = new Date()
-	const esProximo = fechaHoraPartido > ahora
-	const estado = esProximo ? 'Próximo' : 'Pasado'
-	const backgroundColor = esProximo ? '#2ad14c' : '#d6d6d6'
-	const textColor = esProximo ? '#ffffff' : '#000000'
 
 	const puntosEloEquipo1 =
 		puntosEquipo1 > puntosEquipo2

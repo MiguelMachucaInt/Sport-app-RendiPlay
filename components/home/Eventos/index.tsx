@@ -9,7 +9,6 @@ interface EventosProps {
 	data: Match[]
 }
 function Eventos({ data }: Readonly<EventosProps>) {
-	console.log('Data', data)
 	const sortedData = useMemo(() => {
 		return [...data]
 			.filter((match) => match.state === 'P')

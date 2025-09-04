@@ -2,6 +2,7 @@ import { colors } from '@/assets/colors/styles'
 import Loading from '@/components/Loading'
 import CardPartidos from '@/components/Torneo/Partidos/CardPartidos'
 import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input'
+import OurButton from '@/components/ui/ourButton'
 import PartidosService from '@/services/partidos'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { YStack } from '@tamagui/stacks'
@@ -25,6 +26,9 @@ function PartidosTab() {
 	})
 
 	const [searchQuery, setSearchQuery] = useState('')
+	const [filterType, setFilterType] = useState<
+		'all' | 'pending' | 'finished'
+	>('all')
 
 	const handleRefresh = async () => {
 		setRefreshing(true)
@@ -46,20 +50,53 @@ function PartidosTab() {
 	}, [data])
 
 	const filteredData = useMemo(() => {
+		let result = sortedData
+
+		// aplicar filtro por estado
+		if (filterType === 'pending') {
+			result = result.filter((m) => m.state !== 'F')
+		} else if (filterType === 'finished') {
+			result = result.filter((m) => m.state === 'F')
+		}
+
+		// aplicar búsqueda
 		if (searchQuery) {
-			return sortedData?.filter((match) => {
-				const term = searchQuery.toLowerCase()
-				return (
+			const term = searchQuery.toLowerCase()
+			result = result.filter(
+				(match) =>
 					match.team1.toLowerCase().includes(term) ||
 					match.team2.toLowerCase().includes(term)
-				)
-			})
+			)
 		}
-		return sortedData // Usa los datos ordenados
-	}, [sortedData, searchQuery])
+
+		return result
+	}, [sortedData, filterType, searchQuery])
 
 	return !isLoading && !refreshing ? (
 		<YStack style={{ marginBottom: 240 }}>
+			{/* Botones de filtro */}
+			<View
+				style={{
+					flexDirection: 'row',
+					justifyContent: 'center',
+					gap: 8,
+					padding: 10
+				}}
+			>
+				<OurButton
+					onPress={() => setFilterType('pending')}
+					variant={filterType === 'pending' ? 'solid' : 'outline'}
+				>
+					Por jugar
+				</OurButton>
+
+				<OurButton
+					onPress={() => setFilterType('finished')}
+					variant={filterType === 'finished' ? 'solid' : 'outline'}
+				>
+					Finalizados
+				</OurButton>
+			</View>
 			{Platform.OS === 'web' ? (
 				<View>
 					<TextInput
@@ -121,6 +158,7 @@ function PartidosTab() {
 							puntosEquipo2={partido.resultpoints2}
 							puntosElo={partido.elo_points}
 							categoria={partido.category_desc}
+							state={item.state}
 						/>
 					)
 				}}
@@ -133,7 +171,7 @@ function PartidosTab() {
 				contentContainerStyle={{
 					paddingTop: 10,
 					paddingHorizontal: 5,
-					paddingBottom: 220
+					paddingBottom: 400
 				}}
 			/>
 		</YStack>
