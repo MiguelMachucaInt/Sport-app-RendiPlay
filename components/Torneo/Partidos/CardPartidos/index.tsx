@@ -29,12 +29,10 @@ function CardPartidos({
 	categoria,
 	state
 }: Readonly<CardPartidosProps>) {
-	const fecha = fechaPartido
-		? getLuxonDate(fechaPartido, { utc: true })
-		: null
+	const fecha = fechaPartido ? getLuxonDate(fechaPartido) : null
 	const fechaFormateada = fecha ? fecha.toFormat('dd/MM/yyyy') : ''
-
 	const horaFormateada = fecha ? fecha.toFormat('HH:mm') : ''
+	console.log({ 'fecha y hora': fechaFormateada, horaFormateada })
 
 	let estado = 'Pasado'
 	let backgroundColor = '#d6d6d6'

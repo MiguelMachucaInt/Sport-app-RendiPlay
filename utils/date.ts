@@ -9,13 +9,16 @@ export function getLuxonDate(
 ) {
   let luxonDate: DateTime
   if (date instanceof Date) {
-    luxonDate = DateTime.fromJSDate(date, { zone: 'utc' }) // 👈 siempre utc interno
+    luxonDate = options?.utc
+      ? DateTime.fromJSDate(date, { zone: 'utc' })
+      : DateTime.fromJSDate(date) // <-- sin zone
   } else {
-    luxonDate = DateTime.fromISO(date, { zone: 'utc' }) // 👈 siempre utc interno
+    luxonDate = options?.utc
+      ? DateTime.fromISO(date, { zone: 'utc' })
+      : DateTime.fromISO(date) // <-- sin zone
   }
   return luxonDate.setLocale('es')
 }
-
 
 export function getAgeFromBirthDate(birthDate: string | Date): number {
 	const luxonDate = getLuxonDate(birthDate)
