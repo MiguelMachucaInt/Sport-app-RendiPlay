@@ -28,6 +28,13 @@ function RankingRow({ ranking, index }: Readonly<RankingRowProps>) {
 		}
 	}
 
+	function getCategoryByPoints(points: string | number) {
+		const pts = typeof points === 'string' ? parseInt(points, 10) : points
+		if (pts < 1050) return 'NOVICE'
+		if (pts >= 1050 && pts <= 1100) return 'CHALLENGER'
+		if (pts > 1100) return 'PREMIER'
+		return 'UNKNOWN'
+	}
 	return (
 		<XStack
 			style={{
@@ -47,7 +54,7 @@ function RankingRow({ ranking, index }: Readonly<RankingRowProps>) {
 						{ranking.team_desc}
 					</Text>
 					<Text style={styles.categoryName}>
-						({ranking.category_desc})
+						({getCategoryByPoints(ranking.points)})
 					</Text>
 				</YStack>
 				<View

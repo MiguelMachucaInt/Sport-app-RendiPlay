@@ -1,12 +1,10 @@
 import { newsData } from '@/components/news/newsData'
-import { useLocalSearchParams, useRouter, useSegments } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native'
 
 export default function NewsDetailScreen() {
 	const { id } = useLocalSearchParams()
 	const router = useRouter()
-
-	console.log('id', useSegments())
 
 	const newsItem = newsData.find((item) => item.id === id)
 

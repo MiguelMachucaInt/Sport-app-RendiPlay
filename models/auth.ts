@@ -3,6 +3,7 @@ export interface AuthUser
 	id: string
 	name: string
 	picture?: string | null
+	blocked?: boolean
 }
 
 export interface User {
@@ -22,6 +23,7 @@ export interface User {
 	picture: string | null
 	access_token: string
 	refresh_token: string
+	blocked?: boolean
 }
 export interface VerifyUserResponse {
 	user?: User | null

@@ -1,4 +1,5 @@
 import { colors } from '@/assets/colors/styles'
+import BlockedOverlay from '@/components/blocked/BlockedOverlay'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useAuthStore } from '@/state/auth'
 
@@ -64,6 +65,7 @@ function HomeLayout({ ...props }: Readonly<HomeLayoutProps>) {
 					}}
 				/>
 			</Tabs>
+			<BlockedOverlay />
 		</ProtectedRoute>
 	)
 }

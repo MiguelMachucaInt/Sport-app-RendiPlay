@@ -1,11 +1,11 @@
-import Loading from '@/components/Loading';
-import { AuthProviderHandler } from '@/controllers/authController';
-import { useOurToast } from '@/hooks/useOurToast';
-import { AuthUser, User } from '@/models/auth';
-import { removeTokens, saveTokens } from '@/utils/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { router } from 'expo-router';
-import { pick } from 'lodash';
+import Loading from '@/components/Loading'
+import { AuthProviderHandler } from '@/controllers/authController'
+import { useOurToast } from '@/hooks/useOurToast'
+import { AuthUser, User } from '@/models/auth'
+import { removeTokens, saveTokens } from '@/utils/auth'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { router } from 'expo-router'
+import { pick } from 'lodash'
 import {
 	PropsWithChildren,
 	createContext,
@@ -13,30 +13,33 @@ import {
 	useEffect,
 	useMemo,
 	useState
-} from 'react';
-import { useLoading } from './loading';
+} from 'react'
+import { useLoading } from './loading'
 
 interface IAuthContext {
 	user: AuthUser | null
 	isLoading: boolean
 	provider: AuthProviderType | null
 	signOut: (showSuccessToast?: boolean) => Promise<void>
-	signInWithToken: (token: string, provider: AuthProviderType) => Promise<void>
+	signInWithToken: (
+		token: string,
+		provider: AuthProviderType
+	) => Promise<void>
 	signInWithUser: (user: User, provider: AuthProviderType) => Promise<void>
 }
 
 const AuthContext = createContext<IAuthContext>({
 	user: null,
-	signOut: async () => { },
-	signInWithToken: async () => { },
-	signInWithUser: async () => { },
+	signOut: async () => {},
+	signInWithToken: async () => {},
+	signInWithUser: async () => {},
 	isLoading: true,
 	provider: null
 })
 
 export type AuthProviderType = 'GOOGLE' | 'APPLE'
 
-interface AuthProviderProps extends PropsWithChildren { }
+interface AuthProviderProps extends PropsWithChildren {}
 export default function AuthProvider({
 	children
 }: Readonly<AuthProviderProps>) {
@@ -125,7 +128,14 @@ export default function AuthProvider({
 	async function setUserFromResponse(user: User) {
 		await saveTokens(user.access_token, user.refresh_token)
 		setUser({
-			...pick(user, ['document_number', 'birthdate', 'cellphone', 'mail', 'picture']),
+			...pick(user, [
+				'document_number',
+				'birthdate',
+				'cellphone',
+				'mail',
+				'picture',
+				'blocked'
+			]),
 			id: user.user_id,
 			name: `${user.names} ${user.lastnames}`
 		})
@@ -133,23 +143,30 @@ export default function AuthProvider({
 
 	useEffect(() => {
 		async function verifyUser() {
-			const provider = await AsyncStorage.getItem('authProvider') as AuthProviderType | null
+			const provider = (await AsyncStorage.getItem(
+				'authProvider'
+			)) as AuthProviderType | null
 			if (provider) {
 				const controller = getAuthControllerFromProvider(provider)
 				if (controller) {
-					const refreshToken = await AsyncStorage.getItem('refreshToken')
-					setUserFromResponse(await controller.verifyUser(refreshToken))
+					const refreshToken =
+						await AsyncStorage.getItem('refreshToken')
+					setUserFromResponse(
+						await controller.verifyUser(refreshToken)
+					)
 						.then(() => setProvider(provider))
 						.catch(async (e) => {
-							console.log('refresh token falló', JSON.stringify(e))
+							console.log(
+								'refresh token falló',
+								JSON.stringify(e)
+							)
 							await removeTokens()
 						})
 				}
 			}
 		}
 		setIsLoading(true)
-		verifyUser()
-			.finally(() => setIsLoading(false))
+		verifyUser().finally(() => setIsLoading(false))
 	}, [])
 
 	const value = useMemo(
@@ -172,7 +189,6 @@ export default function AuthProvider({
 }
 
 export const useAuthStore = () => useContext(AuthContext)
-
 
 export function getAuthControllerFromProvider(provider: AuthProviderType) {
 	return new AuthProviderHandler(provider).getHandler()

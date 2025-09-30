@@ -1,5 +1,6 @@
 import { colors } from '@/assets/colors/styles'
 import { stylesHeaders } from '@/assets/customStyles'
+import BlockedOverlay from '@/components/blocked/BlockedOverlay'
 import CustomHeader from '@/components/header'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { isIos } from '@tamagui/core'
@@ -70,6 +71,7 @@ function MainLayout({ ...props }: Readonly<MainLayoutProps>) {
 					zIndex: 1
 				}}
 			/>
+			<BlockedOverlay />
 		</ProtectedRoute>
 	)
 }

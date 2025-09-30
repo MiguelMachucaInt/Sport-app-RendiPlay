@@ -5,11 +5,11 @@ import { SportHandler } from '@/controllers/sportHandler'
 import PuntuacionesService from '@/services/puntuacion'
 import CategorySexService from '@/services/sexbranch'
 import { mergeStyles } from '@/utils/styles'
-import { YStack } from '@tamagui/stacks'
+//import { YStack } from '@tamagui/stacks'
 import { useQuery } from '@tanstack/react-query'
 import { useLocalSearchParams } from 'expo-router'
 import { useEffect, useMemo, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 
 interface TablaPuntuacionesProps {}
 
@@ -131,9 +131,9 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 		}
 	}, [categoriesWithSex])
 	return !isFetching ? (
-		<YStack
+		<ScrollView
 			style={{
-				marginBottom: 450,
+				marginBottom: 350,
 				marginTop: 10,
 				backgroundColor: 'transparent'
 			}}
@@ -210,7 +210,7 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 				refreshing,
 				onRefresh: handleRefresh
 			})}
-		</YStack>
+		</ScrollView>
 	) : (
 		<Loading flex={0} />
 	)
