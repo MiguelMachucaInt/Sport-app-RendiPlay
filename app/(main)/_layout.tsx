@@ -3,13 +3,17 @@ import { stylesHeaders } from '@/assets/customStyles'
 import BlockedOverlay from '@/components/blocked/BlockedOverlay'
 import CustomHeader from '@/components/header'
 import ProtectedRoute from '@/components/ProtectedRoute'
+import { useAuthStore } from '@/state/auth'
 import { isIos } from '@tamagui/core'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Stack } from 'expo-router'
+import { Stack, usePathname } from 'expo-router'
 import { Image, View } from 'react-native'
 
 interface MainLayoutProps {}
 function MainLayout({ ...props }: Readonly<MainLayoutProps>) {
+	const { user } = useAuthStore()
+	const pathname = usePathname()
+	const showOverlay = user?.blocked && pathname !== '/'
 	return (
 		<ProtectedRoute redirectTo={'/(main)/(home)'}>
 			<View
@@ -71,7 +75,7 @@ function MainLayout({ ...props }: Readonly<MainLayoutProps>) {
 					zIndex: 1
 				}}
 			/>
-			<BlockedOverlay />
+			<BlockedOverlay show={showOverlay} />
 		</ProtectedRoute>
 	)
 }

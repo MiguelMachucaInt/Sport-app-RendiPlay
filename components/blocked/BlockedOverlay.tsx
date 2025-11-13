@@ -2,10 +2,9 @@ import { useAuthStore } from '@/state/auth'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 
-export default function BlockedOverlay() {
+export default function BlockedOverlay({ show }: { show?: boolean }) {
 	const { user } = useAuthStore()
-
-	if (!user?.blocked) return null
+	if (!user?.blocked || !show) return null
 
 	return (
 		<View style={styles.overlay}>

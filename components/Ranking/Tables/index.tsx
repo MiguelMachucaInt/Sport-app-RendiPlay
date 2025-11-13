@@ -3,13 +3,8 @@ import { Input, InputField, InputIcon, InputSlot } from '@/components/ui/input'
 import { Ranking } from '@/services/rating'
 import AntDesign from '@expo/vector-icons/AntDesign'
 import { useMemo, useState } from 'react'
-import {
-	FlatList,
-	RefreshControl,
-	Text,
-	TouchableOpacity,
-	View
-} from 'react-native'
+import { FlatList, RefreshControl, Text, View } from 'react-native'
+import RNPickerSelect from 'react-native-picker-select'
 import RankingRow from './rankingRow'
 
 interface TablaPuntuacionesProps {
@@ -17,50 +12,29 @@ interface TablaPuntuacionesProps {
 	refreshing: boolean
 	onRefresh: () => void
 	tipo?: string
+	selectedCategory: string | null
+	setSelectedCategory: (cat: string | null) => void
 }
 
 function TablaRanking({
 	tipo,
 	data,
 	refreshing,
-	onRefresh
+	onRefresh,
+	selectedCategory,
+	setSelectedCategory
 }: TablaPuntuacionesProps) {
 	const [searchQuery, setSearchQuery] = useState('')
-	const [selectedBranch, setSelectedBranch] = useState<string | null>(null)
-	const [selectedCategory, setSelectedCategory] = useState<string | null>(
-		null
-	)
 
-	// Obtener las ramas únicas
-	const branches = useMemo(() => {
-		const unique = Array.from(new Set(data.map((d) => d.branch_desc)))
-		return unique
+	const allCategories = useMemo(() => {
+		const unique = Array.from(new Set(data.map((d) => d.category_desc)))
+		return unique.sort((a, b) => a.localeCompare(b))
 	}, [data])
 
-	// Obtener las categorías únicas de la rama seleccionada
-	const categories = useMemo(() => {
-		if (!selectedBranch) return []
-		const unique = Array.from(
-			new Set(
-				data
-					.filter((d) => d.branch_desc === selectedBranch)
-					.map((d) => d.category_desc)
-			)
-		)
-		return unique
-	}, [data, selectedBranch])
-
-	// Filtrado final de los datos
 	const filteredData = useMemo(() => {
-		let ordered = data
-		if (selectedBranch) {
-			ordered = ordered.filter((d) => d.branch_desc === selectedBranch)
-		}
-		if (selectedCategory) {
-			ordered = ordered.filter(
-				(d) => d.category_desc === selectedCategory
-			)
-		}
+		if (!selectedCategory) return []
+		let ordered = data.filter((d) => d.category_desc === selectedCategory)
+
 		if (searchQuery) {
 			ordered = ordered.filter((d) =>
 				d.team_desc.toLowerCase().includes(searchQuery.toLowerCase())
@@ -68,14 +42,14 @@ function TablaRanking({
 		}
 		ordered.sort((a, b) => Number(b.points) - Number(a.points))
 		return ordered
-	}, [data, selectedBranch, selectedCategory, searchQuery])
+	}, [data, selectedCategory, searchQuery])
 
 	return (
-		<View style={{ marginTop: 20, flex: 1 }}>
-			{/* Buscador */}
+		<View style={{ marginTop: 15, flex: 1 }}>
+			{/* Buscador arriba */}
 			<Input
 				size="md"
-				style={{ marginBottom: 16, backgroundColor: 'white' }}
+				style={{ marginBottom: 10, backgroundColor: 'white' }}
 				variant="rounded"
 			>
 				<InputSlot style={{ paddingLeft: 10 }}>
@@ -96,107 +70,61 @@ function TablaRanking({
 				/>
 			</Input>
 
-			{/* Botones de ramas */}
+			{/* ComboBox de Categorías */}
 			<View
 				style={{
-					flexDirection: 'row',
-					marginBottom: 8,
-					justifyContent: 'space-between'
+					marginBottom: 10,
+					backgroundColor: 'white',
+					borderRadius: 9999,
+					borderWidth: 1,
+					borderColor: '#ccc',
+					paddingHorizontal: 15,
+					height: 40,
+					justifyContent: 'center'
 				}}
 			>
-				{branches.map((branch) => (
-					<TouchableOpacity
-						key={branch}
-						style={{
-							paddingVertical: 8,
-							paddingHorizontal: 16,
-							marginRight: 8,
-							backgroundColor:
-								selectedBranch === branch
-									? colors.primary.naranja
-									: 'lightgray',
-							borderRadius: 4,
-							minWidth: 80,
-							alignItems: 'center'
-						}}
-						onPress={() => {
-							setSelectedBranch(branch)
-							setSelectedCategory(null)
-						}}
-					>
-						<Text
-							style={{
-								color:
-									selectedBranch === branch
-										? 'white'
-										: 'black'
-							}}
-						>
-							{branch}
-						</Text>
-					</TouchableOpacity>
-				))}
-			</View>
-
-			{/* Botones de categorías */}
-			{selectedBranch && (
-				<View
-					style={{
-						flexDirection: 'row',
-						marginBottom: 16,
-						flexWrap: 'wrap',
-						justifyContent: 'space-evenly',
-						gap: 8
+				<RNPickerSelect
+					placeholder={{
+						label: 'Seleccione una categoría',
+						value: null,
+						color: 'gray',
+						fontSize: 18
 					}}
-				>
-					{categories.map((category) => (
-						<TouchableOpacity
-							key={category}
-							style={{
-								paddingVertical: 6,
-								paddingHorizontal: 12,
-								backgroundColor:
-									selectedCategory === category
-										? colors.primary.naranja
-										: 'lightgray',
-								borderRadius: 4,
-								minWidth: 100,
-								alignItems: 'center',
-								marginBottom: 8
-							}}
-							onPress={() => setSelectedCategory(category)}
-						>
-							<Text
-								style={{
-									color:
-										selectedCategory === category
-											? 'white'
-											: 'black'
-								}}
-							>
-								{category}
-							</Text>
-						</TouchableOpacity>
-					))}
-				</View>
-			)}
+					onValueChange={(value) => setSelectedCategory(value)}
+					value={selectedCategory}
+					items={allCategories.map((c) => ({ label: c, value: c }))}
+					style={{
+						inputIOS: {
+							color: selectedCategory ? 'black' : 'gray',
+							fontSize: 14
+						},
+						inputAndroid: {
+							color: selectedCategory ? 'black' : 'gray',
+							fontSize: 14
+						}
+					}}
+					useNativeAndroidPickerStyle={false}
+				/>
+			</View>
 
 			{/* Header */}
-			<View style={{ flexDirection: 'row', marginBottom: 16 }}>
-				<Text style={{ flex: 4, fontWeight: '800', fontSize: 16 }}>
-					{tipo}
-				</Text>
-				<Text
-					style={{
-						flex: 1,
-						fontWeight: '800',
-						fontSize: 16,
-						textAlign: 'center'
-					}}
-				>
-					Puntos
-				</Text>
-			</View>
+			{selectedCategory && (
+				<View style={{ flexDirection: 'row', marginBottom: 12 }}>
+					<Text style={{ flex: 4, fontWeight: '800', fontSize: 16 }}>
+						{tipo}
+					</Text>
+					<Text
+						style={{
+							flex: 1,
+							fontWeight: '800',
+							fontSize: 16,
+							textAlign: 'center'
+						}}
+					>
+						Puntos
+					</Text>
+				</View>
+			)}
 
 			{/* Lista */}
 			<FlatList
@@ -204,13 +132,30 @@ function TablaRanking({
 				renderItem={({ item, index }) => (
 					<RankingRow ranking={item} index={index} />
 				)}
+				keyExtractor={(item, index) => index.toString()}
 				refreshControl={
 					<RefreshControl
 						refreshing={refreshing}
 						onRefresh={onRefresh}
 					/>
 				}
-				contentContainerStyle={{ paddingBottom: 40 }}
+				contentContainerStyle={{
+					paddingBottom: 40,
+					flexGrow: 1,
+					justifyContent:
+						filteredData.length === 0 ? 'center' : 'flex-start'
+				}}
+				ListEmptyComponent={
+					selectedCategory ? (
+						<Text style={{ textAlign: 'center', color: 'gray' }}>
+							No hay datos en esta categoría
+						</Text>
+					) : (
+						<Text style={{ textAlign: 'center', color: 'gray' }}>
+							Seleccione una categoría para ver resultados
+						</Text>
+					)
+				}
 			/>
 		</View>
 	)

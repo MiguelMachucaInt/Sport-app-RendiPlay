@@ -143,44 +143,46 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 					marginVertical: 8
 				}}
 			>
-				<View
-					style={{
+				<ScrollView
+					horizontal={categorias.length > 3}
+					showsHorizontalScrollIndicator={false}
+					contentContainerStyle={{
 						flexDirection: 'row',
-						flexWrap: 'wrap',
-						justifyContent: 'center',
+						justifyContent:
+							categorias.length <= 3 ? 'center' : 'flex-start',
 						gap: 6,
 						paddingHorizontal: 8,
-						marginBottom: 8
+						marginBottom: 8,
+						flexGrow: categorias.length <= 3 ? 1 : 0
 					}}
 				>
 					{categorias.map((cat) => {
 						const isSelected = cat === categoriaActual
 						const color = getCategoryColor(cat)
 						return (
-							<View key={cat}>
-								<OurTouchable
-									onPress={() => setCategoriaActual(cat)}
-									style={mergeStyles(styles.button, {
-										backgroundColor: isSelected
-											? color
-											: 'white'
-									})}
+							<OurTouchable
+								key={cat}
+								onPress={() => setCategoriaActual(cat)}
+								style={mergeStyles(styles.button, {
+									backgroundColor: isSelected
+										? color
+										: 'white'
+								})}
+							>
+								<Text
+									style={{
+										color: isSelected ? 'white' : 'black',
+										fontWeight: '600',
+										fontSize: 12
+									}}
+									numberOfLines={1}
 								>
-									<Text
-										style={{
-											color: isSelected
-												? 'white'
-												: 'black',
-											fontWeight: '600'
-										}}
-									>
-										{cat}
-									</Text>
-								</OurTouchable>
-							</View>
+									{cat}
+								</Text>
+							</OurTouchable>
 						)
 					})}
-				</View>
+				</ScrollView>
 			</View>
 
 			<View
@@ -191,13 +193,17 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 				}}
 			>
 				{categoriesWithSex?.map((sexo) => {
-					console.log('sexo', sexo)
 					const isSelectedSexos = sexo === sexoActual
 					return (
 						<View key={sexo as string}>
 							<OurButton
 								onPress={() => setSexoActual(sexo as string)}
 								variant={isSelectedSexos ? 'solid' : 'outline'}
+								style={{
+									paddingVertical: 2,
+									paddingHorizontal: 10,
+									minWidth: 50
+								}}
 							>
 								{sexo as string}
 							</OurButton>
@@ -205,6 +211,7 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 					)
 				})}
 			</View>
+
 			{handler?.renderTablaDePosiciones({
 				data: dataFiltrada,
 				refreshing,
@@ -219,8 +226,10 @@ function TablaPuntuaciones({ ...props }: Readonly<TablaPuntuacionesProps>) {
 const styles = StyleSheet.create({
 	button: {
 		paddingVertical: 10,
-		paddingHorizontal: 30,
-		borderRadius: 10
+		paddingHorizontal: 20,
+		borderRadius: 8,
+		minWidth: 100,
+		alignItems: 'center'
 	}
 })
 

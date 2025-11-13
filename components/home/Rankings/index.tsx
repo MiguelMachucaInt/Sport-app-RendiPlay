@@ -22,15 +22,17 @@ function Rankings({ data }: Readonly<RankingsProps>) {
 			<OurCarousel
 				data={data}
 				renderItem={({ item }) => {
-					return <OurTouchable
-						activeOpacity={0.4}
-						key={item.sport_id}
-						onPress={() =>
-							router.push(`/ranking/${item.sport_id}`)
-						}
-					>
-						<SportIcon sport={item} />
-					</OurTouchable>
+					return (
+						<OurTouchable
+							activeOpacity={0.4}
+							key={item.sport_id}
+							onPress={() =>
+								router.push(`/ranking/${item.sport_id}`)
+							}
+						>
+							<SportIcon sport={item} />
+						</OurTouchable>
+					)
 				}}
 				height={90}
 				width={80}

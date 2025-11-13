@@ -9,7 +9,13 @@ import { Sport } from './base'
 import { TablaPosicionesWallyBuilder } from './tablaPosiciones/wally'
 
 export class WallySport extends Sport {
-	renderRanking({ data, refreshing, onRefresh }): ReactNode {
+	renderRanking({
+		data,
+		refreshing,
+		onRefresh,
+		selectedCategory,
+		setSelectedCategory
+	}): ReactNode {
 		return (
 			<OurTabs
 				defaultValue="clubes"
@@ -25,6 +31,8 @@ export class WallySport extends Sport {
 								data={data.Clubs}
 								refreshing={refreshing}
 								onRefresh={onRefresh}
+								selectedCategory={selectedCategory}
+								setSelectedCategory={setSelectedCategory}
 							/>
 						),
 						tabKey: 'clubes'
@@ -37,6 +45,8 @@ export class WallySport extends Sport {
 								data={data.Global}
 								refreshing={refreshing}
 								onRefresh={onRefresh}
+								selectedCategory={selectedCategory}
+								setSelectedCategory={setSelectedCategory}
 							/>
 						),
 						tabKey: 'jugadores'
@@ -49,6 +59,8 @@ export class WallySport extends Sport {
 								data={data.Equipos}
 								refreshing={refreshing}
 								onRefresh={onRefresh}
+								selectedCategory={selectedCategory}
+								setSelectedCategory={setSelectedCategory}
 							/>
 						),
 						tabKey: 'equipos'

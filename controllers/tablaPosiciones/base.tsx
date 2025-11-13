@@ -54,7 +54,6 @@ export abstract class TablaPosicionesBuilder implements Builder<ReactNode> {
 						contentContainerStyle={styles.listContent}
 						refreshing={refreshing}
 						onRefresh={onRefresh}
-						scrollEnabled={false}
 					/>
 				</View>
 				<XStack width={'58%'} alignItems="center">
@@ -83,7 +82,6 @@ export abstract class TablaPosicionesBuilder implements Builder<ReactNode> {
 								contentContainerStyle={styles.listContent}
 								refreshing={refreshing}
 								onRefresh={onRefresh}
-								scrollEnabled={false}
 							/>
 						</YStack>
 					</ShadowScrollView>
@@ -142,6 +140,7 @@ const styles = StyleSheet.create({
 	},
 	listContent: {
 		paddingHorizontal: 8
+		//flex: 1
 	},
 	teamCell: {
 		paddingLeft: 8,

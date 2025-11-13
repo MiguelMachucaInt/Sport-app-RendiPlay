@@ -14,6 +14,8 @@ export default function NewsSection() {
 	const { width } = useWindowDimensions()
 	const imageHeight = width * 0.5
 	const smallCardHeight = width * 0.25
+	const smallCardMargin = 5
+	const smallCardWidth = (width - 12 * 2 - smallCardMargin) / 2
 	const router = useRouter()
 
 	return (
@@ -24,7 +26,7 @@ export default function NewsSection() {
 			}}
 		>
 			<TouchableOpacity
-				style={{ height: 200 }}
+				style={{ marginBottom: 12 }}
 				onPress={() =>
 					router.push(`(main)/(home)/${newsData[0].id}` as any)
 				}
@@ -37,7 +39,7 @@ export default function NewsSection() {
 							height: imageHeight,
 							borderRadius: 12
 						}}
-						resizeMode="cover"
+						resizeMode="contain"
 					/>
 					<View
 						style={{
@@ -86,16 +88,19 @@ export default function NewsSection() {
 				style={{
 					flexDirection: 'row',
 					flexWrap: 'wrap',
-					gap: 5
+					justifyContent: 'space-between'
 				}}
 			>
 				{newsData.slice(1).map((item) => (
 					<TouchableOpacity
 						key={item.id}
+						style={{
+							width: smallCardWidth,
+							marginBottom: 5
+						}}
 						onPress={() =>
 							router.push(`(main)/(home)/${item.id}` as any)
 						}
-						style={{ width: '49%' }}
 					>
 						<View style={{ position: 'relative' }}>
 							<Image

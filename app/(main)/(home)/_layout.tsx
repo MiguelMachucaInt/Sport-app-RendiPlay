@@ -5,11 +5,14 @@ import { useAuthStore } from '@/state/auth'
 
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
-import { Tabs } from 'expo-router'
+import { Tabs, usePathname } from 'expo-router'
 
 interface HomeLayoutProps {}
 function HomeLayout({ ...props }: Readonly<HomeLayoutProps>) {
 	const { user } = useAuthStore()
+	const pathname = usePathname()
+	const showOverlay = user?.blocked && pathname !== '/'
+
 	return (
 		<ProtectedRoute redirectTo={'/(main)/(home)'}>
 			<Tabs
@@ -65,7 +68,7 @@ function HomeLayout({ ...props }: Readonly<HomeLayoutProps>) {
 					}}
 				/>
 			</Tabs>
-			<BlockedOverlay />
+			<BlockedOverlay show={showOverlay} />
 		</ProtectedRoute>
 	)
 }

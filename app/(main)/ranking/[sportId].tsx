@@ -7,10 +7,13 @@ import { useQuery } from '@tanstack/react-query'
 import { useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 
-interface SportRankingProps { }
+interface SportRankingProps {}
 function SportRanking({ ...props }: Readonly<SportRankingProps>) {
 	const { sportId } = useLocalSearchParams()
 	const [refreshing, setRefreshing] = useState(false)
+	const [selectedCategory, setSelectedCategory] = useState<string | null>(
+		null
+	)
 	const { data, isFetching, refetch } = useQuery({
 		queryKey: ['getRatingsBySportId', sportId],
 		queryFn: () => SportService.getRatingsBySportId(sportId as string)
@@ -40,7 +43,9 @@ function SportRanking({ ...props }: Readonly<SportRankingProps>) {
 				handler?.renderRanking({
 					data,
 					refreshing,
-					onRefresh: handleRefresh
+					onRefresh: handleRefresh,
+					selectedCategory,
+					setSelectedCategory
 				})
 			) : (
 				<Loading flex={0} />
