@@ -4,7 +4,7 @@ import { Image, ImageSourcePropType, View } from 'react-native'
 
 export interface BannerItem {
 	id: string
-	image: ImageSourcePropType
+	image?: ImageSourcePropType
 	title?: string
 }
 

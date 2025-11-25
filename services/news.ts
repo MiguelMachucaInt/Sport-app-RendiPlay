@@ -3,12 +3,14 @@ import { Service } from '.'
 
 class NoticiasService extends Service {
   async getNoticias() {
+    
     return this.requester
       .request<News[]>({
         url: '',
         method: 'GET',
       })
       .then((res) => res.data.map((item) => this.formatNews(item)))
+      
   }
 
   async getNoticiaById(id: string) {
@@ -18,6 +20,7 @@ class NoticiasService extends Service {
         method: 'GET',
       })
       .then((res) => this.formatNews(res.data))
+      
   }
 
   private formatNews(item: News) {

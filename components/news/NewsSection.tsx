@@ -1,14 +1,18 @@
+'use client'
+
+import { News } from '@/models/news.model'
+import NoticiasService from '@/services/news'
 import { YStack } from '@tamagui/stacks'
+import { useRouter } from 'expo-router'
+import { useEffect, useState } from 'react'
 import {
+	ActivityIndicator,
 	Image,
 	Text,
 	TouchableOpacity,
-	useWindowDimensions,
-	View
+	View,
+	useWindowDimensions
 } from 'react-native'
-
-import { newsData } from '@/components/news/newsData'
-import { useRouter } from 'expo-router'
 
 export default function NewsSection() {
 	const { width } = useWindowDimensions()
@@ -18,28 +22,88 @@ export default function NewsSection() {
 	const smallCardWidth = (width - 12 * 2 - smallCardMargin) / 2
 	const router = useRouter()
 
+	const [news, setNews] = useState<News[]>([])
+	const [loading, setLoading] = useState(true)
+
+	useEffect(() => {
+		NoticiasService.getNoticias()
+			.then((data) => {
+				const filtered = data.filter(
+					(item) => item.tag !== 'OurCarousel'
+				)
+
+				const orderMap: Record<string, number> = {
+					Wally: 1,
+					ADECUACIÓN: 2,
+					VERANO: 3,
+					APERTURA: 4,
+					CLAUSURA: 5
+				}
+				const sorted = filtered.sort((a, b) => {
+					const orderA = orderMap[a.tag ?? ''] ?? 999
+					const orderB = orderMap[b.tag ?? ''] ?? 999
+					return orderA - orderB
+				})
+
+				setNews(sorted)
+
+				sorted.forEach((item) => {
+					if (item.image?.uri) Image.prefetch(item.image.uri)
+					item.extraSections?.forEach((section) => {
+						if (section.image?.uri)
+							Image.prefetch(section.image.uri)
+					})
+				})
+			})
+			.finally(() => setLoading(false))
+	}, [])
+
+	if (loading) {
+		return (
+			<View
+				style={{
+					flex: 1,
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}
+			>
+				<ActivityIndicator size="large" color="#f44336" />
+			</View>
+		)
+	}
+
+	if (!news.length) {
+		return (
+			<View
+				style={{
+					flex: 1,
+					justifyContent: 'center',
+					alignItems: 'center'
+				}}
+			>
+				<Text>No hay noticias disponibles</Text>
+			</View>
+		)
+	}
+
 	return (
-		<YStack
-			style={{
-				paddingHorizontal: 12,
-				paddingVertical: 8
-			}}
-		>
+		<YStack style={{ paddingHorizontal: 12, paddingVertical: 8 }}>
+			{/* Noticia principal */}
 			<TouchableOpacity
 				style={{ marginBottom: 12 }}
 				onPress={() =>
-					router.push(`(main)/(home)/${newsData[0].id}` as any)
+					router.push(`(main)/(home)/${news[0].id}` as any)
 				}
 			>
 				<View style={{ position: 'relative' }}>
 					<Image
-						source={newsData[0].image}
+						source={news[0].image}
 						style={{
 							width: '100%',
 							height: imageHeight,
 							borderRadius: 12
 						}}
-						resizeMode="contain"
+						resizeMode="cover"
 					/>
 					<View
 						style={{
@@ -53,7 +117,7 @@ export default function NewsSection() {
 						}}
 					>
 						<Text style={{ color: 'white', fontSize: 12 }}>
-							{newsData[0].tag}
+							{news[0].tag}
 						</Text>
 					</View>
 					<View
@@ -72,18 +136,19 @@ export default function NewsSection() {
 							}}
 							numberOfLines={1}
 						>
-							{newsData[0].title}
+							{news[0].title}
 						</Text>
 						<Text
 							style={{ color: 'white', fontSize: 12 }}
 							numberOfLines={1}
 						>
-							{newsData[0].subtitle}
+							{news[0].subtitle}
 						</Text>
 					</View>
 				</View>
 			</TouchableOpacity>
 
+			{/* Otras noticias */}
 			<View
 				style={{
 					flexDirection: 'row',
@@ -91,13 +156,10 @@ export default function NewsSection() {
 					justifyContent: 'space-between'
 				}}
 			>
-				{newsData.slice(1).map((item) => (
+				{news.slice(1).map((item) => (
 					<TouchableOpacity
 						key={item.id}
-						style={{
-							width: smallCardWidth,
-							marginBottom: 5
-						}}
+						style={{ width: smallCardWidth, marginBottom: 5 }}
 						onPress={() =>
 							router.push(`(main)/(home)/${item.id}` as any)
 						}

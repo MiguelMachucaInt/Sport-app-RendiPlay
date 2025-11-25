@@ -1,4 +1,6 @@
-import { newsData } from '@/components/news/newsData'
+import Loading from '@/components/Loading'
+import { News } from '@/models/news.model'
+import NoticiasService from '@/services/news'
 import { useLocalSearchParams, useRouter } from 'expo-router'
 import { useEffect, useState } from 'react'
 import {
@@ -13,20 +15,40 @@ import {
 export default function NewsDetailScreen() {
 	const { id } = useLocalSearchParams()
 	const router = useRouter()
-
-	const newsItem = newsData.find((item) => item.id === id)
 	const screenWidth = Dimensions.get('window').width
-	const [imgHeight, setImgHeight] = useState(220)
+	const [newsItem, setNewsItem] = useState<News | null>(null)
+	const [loading, setLoading] = useState(true)
+	const [imgHeight, setImgHeight] = useState<number>(220)
 
 	useEffect(() => {
-		if (newsItem?.image) {
-			const imgSource = Image.resolveAssetSource(newsItem.image)
-			Image.getSize(imgSource.uri, (w, h) => {
-				const ratio = (screenWidth - 32) / w // ancho disponible
-				setImgHeight(h * ratio) // recalcula altura proporcional
-			})
+		setLoading(true)
+		setNewsItem(null)
+
+		if (id) {
+			NoticiasService.getNoticiaById(id as string)
+				.then((data) => {
+					setNewsItem(data)
+
+					if (data.image?.uri) {
+						Image.getSize(data.image.uri, (w, h) => {
+							setImgHeight((h / w) * (screenWidth - 32))
+						})
+
+						Image.prefetch(data.image.uri)
+					}
+
+					data.extraSections?.forEach((section) => {
+						if (section.image?.uri)
+							Image.prefetch(section.image.uri)
+					})
+				})
+				.finally(() => setLoading(false))
 		}
-	}, [newsItem])
+	}, [id])
+
+	if (loading) {
+		return <Loading />
+	}
 
 	if (!newsItem) {
 		return (
@@ -42,19 +64,25 @@ export default function NewsDetailScreen() {
 		)
 	}
 
+	const formattedDate = newsItem.date
+		? new Date(newsItem.date).toLocaleDateString('es-BO', {
+				day: 'numeric',
+				month: 'long',
+				year: 'numeric'
+			})
+		: 'Fecha no disponible'
+
 	return (
 		<ScrollView
 			style={{ flex: 1, padding: 16 }}
 			contentContainerStyle={{ paddingBottom: 60 }}
 		>
-			{/* Botón volver */}
 			<TouchableOpacity onPress={() => router.back()}>
 				<Text style={{ color: '#f44336', marginBottom: 12 }}>
 					{'< Volver'}
 				</Text>
 			</TouchableOpacity>
 
-			{/* Imagen principal */}
 			<Image
 				source={newsItem.image}
 				resizeMode="cover"
@@ -68,34 +96,24 @@ export default function NewsDetailScreen() {
 				}}
 			/>
 
-			{/* Título */}
 			<Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 4 }}>
 				{newsItem.title}
 			</Text>
 
-			{/* Tag y fecha */}
 			<Text style={{ fontSize: 14, color: '#999', marginBottom: 12 }}>
-				{newsItem.tag} ·{' '}
-				{new Date(newsItem.date).toLocaleDateString('es-BO', {
-					day: 'numeric',
-					month: 'long',
-					year: 'numeric'
-				})}
+				{newsItem.tag} · {formattedDate}
 			</Text>
 
-			{/* Subtítulo */}
 			{newsItem.subtitle && (
 				<Text style={{ fontSize: 16, color: '#666', marginBottom: 16 }}>
 					{newsItem.subtitle}
 				</Text>
 			)}
 
-			{/* Contenido principal */}
 			<Text style={{ fontSize: 16, lineHeight: 24, marginBottom: 20 }}>
 				{newsItem.content}
 			</Text>
 
-			{/* Secciones extras (solo si existen) */}
 			{newsItem.extraSections && newsItem.extraSections.length > 0 && (
 				<View style={{ marginTop: 10 }}>
 					{newsItem.extraSections.map((section, index) => (
