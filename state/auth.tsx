@@ -15,6 +15,7 @@ import {
 	useState
 } from 'react'
 import { useLoading } from './loading'
+import { jwtDecode } from "jwt-decode";
 
 interface IAuthContext {
 	user: AuthUser | null
@@ -125,8 +126,17 @@ export default function AuthProvider({
 		}
 	}
 
+type AppTokenPayload = {
+  roles?: string[];
+  type?: string;
+  userId?: string;
+  exp?: number;
+  iat?: number;
+};
 	async function setUserFromResponse(user: User) {
 		await saveTokens(user.access_token, user.refresh_token)
+		const payload = jwtDecode<AppTokenPayload>(user.access_token);
+		const roles = payload?.roles ?? [];
 		setUser({
 			...pick(user, [
 				'document_number',
@@ -137,7 +147,8 @@ export default function AuthProvider({
 				'blocked'
 			]),
 			id: user.user_id,
-			name: `${user.names} ${user.lastnames}`
+			name: `${user.names} ${user.lastnames}`,
+			roles,
 		})
 	}
 

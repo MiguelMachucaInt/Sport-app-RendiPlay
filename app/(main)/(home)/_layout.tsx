@@ -12,7 +12,7 @@ function HomeLayout({ ...props }: Readonly<HomeLayoutProps>) {
 	const { user } = useAuthStore()
 	const pathname = usePathname()
 	const showOverlay = user?.blocked && pathname !== '/'
-
+const isManager = !!user?.roles?.includes('Manager')
 	return (
 		<ProtectedRoute redirectTo={'/(main)/(home)'}>
 			<Tabs
@@ -47,6 +47,16 @@ function HomeLayout({ ...props }: Readonly<HomeLayoutProps>) {
 						)
 					}}
 				/>
+<Tabs.Screen
+  name="manager"
+  options={{
+    title: 'EQUIPOS',
+    href: isManager ? '/(main)/(home)/manager' : null, 
+    tabBarIcon: ({ color }) => (
+      <FontAwesome6 name="people-group" size={20} color={color} />
+    ),
+  }}
+/>
 				<Tabs.Screen
 					name="perfil"
 					options={{

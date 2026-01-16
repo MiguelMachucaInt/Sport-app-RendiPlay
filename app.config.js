@@ -5,7 +5,7 @@ export default {
     "name": "RendiPlay",
     "description": "Aplicación para la gestión de eventos deportivos",
     "slug": "sport-app",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "owner": "integgreteam",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -25,6 +25,7 @@ export default {
     },
     "android": {
       "package": "com.integgre.rendiplay",
+      "usesCleartextTraffic": true,
       "edgeToEdgeEnabled": true,
       "intentFilters": [
         {

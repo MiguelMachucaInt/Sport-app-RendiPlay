@@ -28,26 +28,21 @@ export default function NewsSection() {
 	useEffect(() => {
 		NoticiasService.getNoticias()
 			.then((data) => {
-				const filtered = data.filter(
+				const enabledNews = data.filter(
+					(item) => item.enabled !== false
+				)
+
+				const others = enabledNews.filter(
 					(item) => item.tag !== 'OurCarousel'
 				)
 
-				const orderMap: Record<string, number> = {
-					Wally: 1,
-					ADECUACIÓN: 2,
-					VERANO: 3,
-					APERTURA: 4,
-					CLAUSURA: 5
-				}
-				const sorted = filtered.sort((a, b) => {
-					const orderA = orderMap[a.tag ?? ''] ?? 999
-					const orderB = orderMap[b.tag ?? ''] ?? 999
-					return orderA - orderB
+				const orderedOthers = others.sort((a, b) => {
+					return (a.order ?? 999) - (b.order ?? 999)
 				})
 
-				setNews(sorted)
+				setNews(orderedOthers)
 
-				sorted.forEach((item) => {
+				orderedOthers.forEach((item) => {
 					if (item.image?.uri) Image.prefetch(item.image.uri)
 					item.extraSections?.forEach((section) => {
 						if (section.image?.uri)

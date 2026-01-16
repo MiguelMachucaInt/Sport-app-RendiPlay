@@ -11,6 +11,7 @@ interface UserMenuIconProps {}
 
 function UserMenuIcon({ ...props }: Readonly<UserMenuIconProps>) {
 	const { signOut, user } = useAuthStore()
+	const isManager = !!user?.roles?.includes('Manager')
 
 	return (
 		<Menu
@@ -57,6 +58,23 @@ function UserMenuIcon({ ...props }: Readonly<UserMenuIconProps>) {
 						<MenuItemLabel size="md">Mis Torneos</MenuItemLabel>
 					</MenuItem>
 					<MenuSeparator />
+					{isManager && (
+						<MenuItem
+							key="MisEquipos"
+							textValue="Mis Equipos"
+							onPress={() =>
+								router.push('/(main)/(home)/manager')
+							}
+							style={{ gap: 7 }}
+						>
+							<FontAwesome6
+								name="people-group"
+								size={20}
+								color={colors.primary.naranja}
+							/>
+							<MenuItemLabel size="md">Mis Equipos</MenuItemLabel>
+						</MenuItem>
+					)}
 					<MenuItem
 						key="CerrarSesion"
 						textValue="Cerrar sesión"

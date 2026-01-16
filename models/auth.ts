@@ -4,6 +4,7 @@ export interface AuthUser
 	name: string
 	picture?: string | null
 	blocked?: boolean
+	roles: string[];
 }
 
 export interface User {

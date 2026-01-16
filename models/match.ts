@@ -7,10 +7,11 @@ export interface Match {
 	team_id2: string
 	team_desc2: string
 	state: string
-	matchdate: string 
+	matchdate: string
 	sport_id: string
 	sport_desc: string
 	program_date?: string
+	field?: string
 }
 
 export interface Partido {

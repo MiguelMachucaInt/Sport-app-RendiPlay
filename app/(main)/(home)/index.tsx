@@ -11,7 +11,12 @@ export default function HomeScreen() {
 
 	useEffect(() => {
 		NoticiasService.getNoticias().then((data) => {
-			const filtered = data.filter((item) => item.tag === 'OurCarousel')
+			const filtered = data
+				.filter(
+					(item) =>
+						item.tag === 'OurCarousel' && item.enabled !== false
+				)
+				.sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
 
 			const bannerItems: BannerItem[] = filtered.map((item) => ({
 				id: item.id,
