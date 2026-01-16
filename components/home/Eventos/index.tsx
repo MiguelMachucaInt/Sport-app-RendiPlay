@@ -27,7 +27,7 @@ function Eventos({ data }: Readonly<EventosProps>) {
 
 			{sortedData.length === 0 ? (
 				<YStack
-					height={150}
+					height={250}
 					alignItems="center"
 					justifyContent="center"
 				>
@@ -41,7 +41,7 @@ function Eventos({ data }: Readonly<EventosProps>) {
 					renderItem={({ item }) => (
 						<EventoSportCard key={item.match_id} match={item} />
 					)}
-					height={150}
+					height={250}
 					mode="horizontal-stack"
 				/>
 			)}
