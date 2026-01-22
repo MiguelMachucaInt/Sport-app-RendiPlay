@@ -46,7 +46,7 @@ function TorneoCard({ data }: Readonly<TorneoCardProps>) {
 				</YStack>
 
 				<XStack paddingHorizontal={10}>
-					<Text>Niveles</Text>
+
 					{handler?.renderTorneoNiveles(data.levels)}
 				</XStack>
 

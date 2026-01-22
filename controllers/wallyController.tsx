@@ -92,30 +92,39 @@ export class WallySport extends Sport {
 			}
 		}
 		return (
-			<XStack gap={2} justifyContent="space-around" flex={1}>
-				{niveles.map((niv) => {
-					const key = niv.level_desc?.toUpperCase?.() || ''
-					const styles = nivelesStyles[key] || {
-						backgroundColor: 'gray',
-						textColor: 'white'
-					}
-					return (
-						<OurBadge
-							key={niv.level_id}
-							text={niv.level_desc}
-							style={{
-								backgroundColor: styles.backgroundColor,
-								borderWidth: 0
-							}}
-							badgeTextProps={{
-								style: {
-									color: styles.textColor
-								}
-							}}
-						/>
-					)
-				})}
-			</XStack>
+		<XStack
+			gap={4}
+			rowGap={4}
+			flexWrap="wrap"
+			justifyContent="center"
+			alignItems="center"
+			flex={1}
+		>
+			{niveles.map((niv) => {
+			const key = niv.level_desc?.toUpperCase?.() || ''
+			const styles = nivelesStyles[key] || {
+				backgroundColor: 'gray',
+				textColor: 'white',
+			}
+
+			return (
+				<OurBadge
+				key={niv.level_id}
+				text={niv.level_desc}
+				style={{
+					backgroundColor: styles.backgroundColor,
+					borderWidth: 0,
+				}}
+				badgeTextProps={{
+					style: {
+					color: styles.textColor,
+					},
+				}}
+				/>
+			)
+			})}
+		</XStack>
 		)
+
 	}
 }

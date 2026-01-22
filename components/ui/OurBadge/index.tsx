@@ -30,7 +30,11 @@ const styles = StyleSheet.create({
     badge: {
         borderColor: colors.primary.naranja,
         borderRadius: 10,
-        justifyContent: 'center'
+        justifyContent: 'center',
+
+        paddingVertical: 5,
+        paddingHorizontal: 8,
+        minHeight: 26,
     },
     active: {
         backgroundColor: colors.primary.naranja
