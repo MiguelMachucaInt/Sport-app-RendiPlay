@@ -18,7 +18,7 @@ function toImageUri(value?: string | null) {
   if (value.startsWith("http://") || value.startsWith("https://")) return value;
   if (value.startsWith("data:image/")) return value;
   if (UUID_RE.test(value)) {
-    const API = process.env.EXPO_PUBLIC_API_URL; 
+    const API = process.env.EXPO_PUBLIC_API_URL;
     return `${API}/resource/${value}`;
   }
   return `data:image/jpeg;base64,${value}`;

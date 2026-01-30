@@ -1,5 +1,6 @@
 export type ManagerTeam = {
   tournament_id: string
+  tournament_desc?: string | null
   team_id: string
   team_name: string
   team_logo?: string | null
