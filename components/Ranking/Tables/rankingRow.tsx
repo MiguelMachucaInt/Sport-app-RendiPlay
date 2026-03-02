@@ -14,9 +14,10 @@ const trendIcons = {
 interface RankingRowProps {
 	ranking: Ranking
 	index: number
+	hideCategory?: boolean
 }
 
-function RankingRow({ ranking, index }: Readonly<RankingRowProps>) {
+function RankingRow({ ranking, index, hideCategory }: Readonly<RankingRowProps>) {
 	let rankingIcon
 	if (ranking.last_position) {
 		if (ranking.current_position > ranking.last_position) {
@@ -28,6 +29,10 @@ function RankingRow({ ranking, index }: Readonly<RankingRowProps>) {
 		}
 	}
 
+	const r = ranking as any
+	const lastTournamentDesc: string | undefined = r.last_tournament_desc
+	const lastTeamDesc: string | undefined = r.last_team_desc
+
 	return (
 		<XStack
 			style={{
@@ -38,6 +43,7 @@ function RankingRow({ ranking, index }: Readonly<RankingRowProps>) {
 		>
 			<XStack width="80%" alignItems="center">
 				<Text style={styles.positionNumber}>{index + 1}.</Text>
+
 				<YStack gap={3} style={{ flex: 1 }}>
 					<Text
 						style={styles.teamName}
@@ -46,10 +52,22 @@ function RankingRow({ ranking, index }: Readonly<RankingRowProps>) {
 					>
 						{ranking.team_desc}
 					</Text>
-					<Text style={styles.categoryName}>
-						({ranking.category_desc})
-					</Text>
+
+					{!hideCategory && (
+						<Text style={styles.categoryName}>({ranking.category_desc})</Text>
+					)}
+					{!!lastTournamentDesc && (
+						<Text style={styles.extraInfo} numberOfLines={1}>
+							Torneo: {lastTournamentDesc}
+						</Text>
+					)}
+					{!!lastTeamDesc && (
+						<Text style={styles.extraInfo} numberOfLines={1}>
+							Equipo: {lastTeamDesc}
+						</Text>
+					)}
 				</YStack>
+
 				<View
 					style={{
 						marginLeft: 8,
@@ -83,6 +101,10 @@ const styles = StyleSheet.create({
 	categoryName: {
 		fontStyle: 'italic',
 		fontSize: 10
+	},
+	extraInfo: {
+		fontSize: 10,
+		opacity: 0.75
 	},
 	points: {
 		fontWeight: '800',

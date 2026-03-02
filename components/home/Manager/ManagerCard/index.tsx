@@ -5,9 +5,11 @@ import { SizableText } from "@tamagui/text";
 import { Image } from "react-native";
 import { router } from "expo-router";
 import type { ManagerTeam } from "@/models/manager";
+import type { TeamsScope } from "@/services/manager";
 
 type Props = {
   team: ManagerTeam;
+  scope: TeamsScope;
 };
 
 const UUID_RE =
@@ -17,20 +19,29 @@ function toImageUri(value?: string | null) {
   if (!value) return null;
   if (value.startsWith("http://") || value.startsWith("https://")) return value;
   if (value.startsWith("data:image/")) return value;
+
   if (UUID_RE.test(value)) {
-    const API = process.env.EXPO_PUBLIC_API_URL;
+    const API = (process.env.EXPO_PUBLIC_API_BASE_URL ?? "").replace(/\/+$/, "");
+    if (!API) return null;
     return `${API}/resource/${value}`;
   }
+
   return `data:image/jpeg;base64,${value}`;
 }
 
-export default function TeamCard({ team }: Readonly<Props>) {
+export default function TeamCard({ team, scope }: Readonly<Props>) {
   const handlePress = () => {
-router.push({
-  pathname: "/(main)/manager/[teamId]",
-  params: { teamId: team.team_id, tournamentId: team.tournament_id, teamName: team.team_name },
-});
+    router.push({
+      pathname: "/(main)/manager/[teamId]",
+      params: {
+        teamId: team.team_id,
+        tournamentId: team.tournament_id,
+        teamName: team.team_name,
+        scope,
+      },
+    });
   };
+
   const logoUri = toImageUri(team.team_logo);
 
   return (

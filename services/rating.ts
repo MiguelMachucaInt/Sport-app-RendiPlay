@@ -13,6 +13,8 @@ export interface Ranking {
 
 export interface GlobalItem extends Ranking {
 	user_id: string
+	last_tournament_desc?: string
+  	last_team_desc?: string
 }
 
 export interface EquipoItem extends Ranking {

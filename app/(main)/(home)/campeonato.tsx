@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { RefreshControl, ScrollView } from 'react-native'
 
+
 export default function HomeScreen() {
 	const [refreshing, setRefreshing] = useState(false)
 	const { data, refetch, isFetching } = useQuery({
@@ -42,7 +43,10 @@ export default function HomeScreen() {
 				<UserInfoCard data={data?.sports_points ?? []} />
 				<Rankings data={data?.sports ?? []} />
 				<Torneos data={data?.currentTournaments ?? []} />
-				<Eventos data={data?.getNextMatches ?? []} />
+				<Eventos
+  data={data?.getNextMatches ?? []}
+  currentTournaments={data?.currentTournaments ?? []}
+/>
 			</YStack>
 		</ScrollView>
 	) : (

@@ -16,10 +16,12 @@ interface CardPartidosProps {
 	puntosElo?: any
 	categoria?: string
 	state?: string
+	field?: string | number
 }
 function CardPartidos({
 	fechaPartido,
 	horaPartido,
+	field,
 	equipo1,
 	equipo2,
 	puntosEquipo1,
@@ -29,9 +31,10 @@ function CardPartidos({
 	categoria,
 	state
 }: Readonly<CardPartidosProps>) {
-	const fecha = fechaPartido ? getLuxonDate(fechaPartido) : null
+	const fecha = fechaPartido ? getLuxonDate(fechaPartido).toUTC() : null
 	const fechaFormateada = fecha ? fecha.toFormat('dd/MM/yyyy') : ''
-	const horaFormateada = fecha ? fecha.toFormat('HH:mm') : ''
+	const hora = horaPartido ? getLuxonDate(horaPartido).toUTC() : null
+	const horaFormateada = hora ? hora.toFormat('HH:mm') : ''
 
 	let estado = 'Pasado'
 	let backgroundColor = '#d6d6d6'
@@ -147,21 +150,21 @@ function CardPartidos({
 					</XStack>
 
 					{/* Hora */}
-					{horaFormateada && (
-						<Text
-							style={[
-								styles.hora,
-								{
-									color: textColor,
-									textAlign: 'center',
-									marginTop: 2,
-									marginLeft: 16
-								}
-							]}
-						>
-							{horaFormateada}
-						</Text>
-					)}
+{horaFormateada && (
+  <Text
+    style={[
+      styles.hora,
+      {
+        color: textColor,
+        textAlign: 'center',
+        marginTop: 4
+      }
+    ]}
+  >
+    {horaFormateada}
+    {field ? ` - Cancha ${field}` : ''}
+  </Text>
+)}
 				</YStack>
 
 				<YStack style={styles.teamWrapper}>

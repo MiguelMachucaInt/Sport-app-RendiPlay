@@ -1,56 +1,71 @@
-import { Service } from "."
-import { ManagerTeam, TeamPlayer, AvailablePlayer } from "@/models/manager"
+import { Service } from ".";
+import type { ManagerTeam, TeamPlayer, AvailablePlayer } from "@/models/manager";
 
-class ManagerService extends Service {
-  async getMyTeams(tournamentId?: string) {
+export type TeamsScope = "manager" | "owner";
+
+class TeamsAccessService extends Service {
+  private base(scope: TeamsScope) {
+    return scope === "owner" ? "owner" : "manager";
+  }
+
+  async getTeams(scope: TeamsScope, tournamentId?: string) {
+
+    const base = this.base(scope);
     return this.requester
       .request<ManagerTeam[]>({
-        url: "manager/teams",
+        url: `${base}/teams`,
         params: tournamentId ? { tournamentId } : undefined,
       })
-      .then((res) => res.data)
+      .then((r) => {
+        return r.data;
+      });
+
   }
 
-  async getTeamPlayers(teamId: string, tournamentId?: string) {
+  async getTeamPlayers(scope: TeamsScope, teamId: string, tournamentId?: string) {
+    const base = this.base(scope);
     return this.requester
       .request<TeamPlayer[]>({
-        url: `manager/teams/${teamId}/players`,
+        url: `${base}/teams/${teamId}/players`,
         params: tournamentId ? { tournamentId } : undefined,
       })
-      .then((res) => res.data)
+      .then((r) => r.data);
   }
 
-  async getAvailablePlayers(teamId: string, tournamentId?: string, search?: string) {
+  async getAvailablePlayers(scope: TeamsScope, teamId: string, tournamentId?: string, search?: string) {
+    const base = this.base(scope);
     return this.requester
       .request<AvailablePlayer[]>({
-        url: `manager/teams/${teamId}/available-players`,
+        url: `${base}/teams/${teamId}/available-players`,
         params: {
           ...(tournamentId ? { tournamentId } : {}),
           ...(search ? { search } : {}),
         },
       })
-      .then((res) => res.data)
+      .then((r) => r.data);
   }
 
-  async addPlayer(teamId: string, tournament_id: string, user_id: string) {
+  async addPlayer(scope: TeamsScope, teamId: string, tournamentId: string, userId: string) {
+    const base = this.base(scope);
     return this.requester
       .request({
-        url: `manager/teams/${teamId}/players`,
+        url: `${base}/teams/${teamId}/players`,
         method: "POST",
-        data: { tournament_id, user_id },
+        data: { tournament_id: tournamentId, user_id: userId },
       })
-      .then((res) => res.data)
+      .then((r) => r.data);
   }
 
-  async removePlayer(teamId: string, tournamentId: string, user_id: string) {
+  async removePlayer(scope: TeamsScope, teamId: string, tournamentId: string, userId: string) {
+    const base = this.base(scope);
     return this.requester
       .request({
-        url: `manager/teams/${teamId}/players/${user_id}`,
+        url: `${base}/teams/${teamId}/players/${userId}`,
         method: "DELETE",
-        params: { tournamentId  },
+        params: { tournamentId },
       })
-      .then((res) => res.data)
+      .then((r) => r.data);
   }
 }
 
-export default new ManagerService("")
+export default new TeamsAccessService("");

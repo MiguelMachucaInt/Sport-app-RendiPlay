@@ -11,7 +11,9 @@ export interface Match {
 	sport_id: string
 	sport_desc: string
 	program_date?: string
-	field?: string
+	field?: string | number
+	team_logo1?: string | null
+  	team_logo2?: string | null
 }
 
 export interface Partido {
@@ -29,4 +31,5 @@ export interface Partido {
 	state_desc: string
 	category_desc: string
 	program_date?: string
+	field?: string | number
 }

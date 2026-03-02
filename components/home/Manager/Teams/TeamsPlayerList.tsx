@@ -17,14 +17,16 @@ import { SizableText } from "@tamagui/text";
 
 import OurCard from "@/components/ui/ourCard";
 import OurTouchable from "@/components/Touchable";
-import ManagerService from "@/services/manager";
+
+import TeamsAccessService, { TeamsScope } from "@/services/manager";
 import type { AvailablePlayer, TeamPlayer } from "@/models/manager";
 
 type Params = {
-  teamId?: string | string[];       // si tu archivo es [teamId].tsx
-  manager?: string | string[];      // si tu archivo es [manager].tsx
+  teamId?: string | string[];
+  manager?: string | string[];
   tournamentId?: string | string[];
   teamName?: string | string[];
+  scope?: string | string[];
 };
 
 function pick(param?: string | string[]) {
@@ -33,11 +35,8 @@ function pick(param?: string | string[]) {
 }
 
 function showToast(msg: string) {
-  if (Platform.OS === "android") {
-    ToastAndroid.show(msg, ToastAndroid.SHORT);
-  } else {
-    Alert.alert("Info", msg);
-  }
+  if (Platform.OS === "android") ToastAndroid.show(msg, ToastAndroid.SHORT);
+  else Alert.alert("Info", msg);
 }
 
 export default function ManagerTeamScreen() {
@@ -46,6 +45,8 @@ export default function ManagerTeamScreen() {
   const teamId = pick(params.teamId) || pick(params.manager);
   const tournamentId = pick(params.tournamentId);
   const teamName = pick(params.teamName);
+
+  const scope: TeamsScope = pick(params.scope) === "owner" ? "owner" : "manager";
 
   const [players, setPlayers] = useState<TeamPlayer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +62,7 @@ export default function ManagerTeamScreen() {
     if (!canCall) return;
     setLoading(true);
     try {
-      const data = await ManagerService.getTeamPlayers(teamId, tournamentId);
+      const data = await TeamsAccessService.getTeamPlayers(scope, teamId, tournamentId);
       setPlayers(data);
     } finally {
       setLoading(false);
@@ -72,7 +73,12 @@ export default function ManagerTeamScreen() {
     if (!canCall) return;
     setLoadingAvail(true);
     try {
-      const data = await ManagerService.getAvailablePlayers(teamId, tournamentId, q ?? "");
+      const data = await TeamsAccessService.getAvailablePlayers(
+        scope,
+        teamId,
+        tournamentId,
+        q ?? ""
+      );
       setAvailable(data);
     } finally {
       setLoadingAvail(false);
@@ -81,17 +87,17 @@ export default function ManagerTeamScreen() {
 
   useEffect(() => {
     loadPlayers();
-  }, [teamId, tournamentId]);
+  }, [teamId, tournamentId, scope]);
 
   useEffect(() => {
     if (!addOpen) return;
     const t = setTimeout(() => loadAvailable(search), 250);
     return () => clearTimeout(t);
-  }, [search, addOpen]);
+  }, [search, addOpen, scope]);
 
   async function onAdd(userId: string) {
     if (!canCall) return;
-    await ManagerService.addPlayer(teamId, tournamentId, userId);
+    await TeamsAccessService.addPlayer(scope, teamId, tournamentId, userId);
     await Promise.all([loadPlayers(), loadAvailable(search)]);
     showToast("Jugador agregado ✅");
   }
@@ -105,24 +111,26 @@ export default function ManagerTeamScreen() {
         text: "Quitar",
         style: "destructive",
         onPress: async () => {
-          await ManagerService.removePlayer(teamId, tournamentId, userId);
+          await TeamsAccessService.removePlayer(scope, teamId, tournamentId, userId);
           await Promise.all([loadPlayers(), loadAvailable(search)]);
           showToast("Jugador removido 🗑️");
         },
       },
     ]);
   }
-  
-function getInitials(p: { names: string; lastnames: string }) {
-  const a = (p.names?.trim()?.[0] ?? "").toUpperCase();
-  const b = (p.lastnames?.trim()?.[0] ?? "").toUpperCase();
-  return (b + a) || "P";
-}
+
+  function getInitials(p: { names: string; lastnames: string }) {
+    const a = (p.names?.trim()?.[0] ?? "").toUpperCase();
+    const b = (p.lastnames?.trim()?.[0] ?? "").toUpperCase();
+    return (b + a) || "P";
+  }
 
   function confirmAdd(p: AvailablePlayer) {
     Alert.alert(
       "Agregar jugador",
-      `¿Seguro que deseas agregar a:\n\n${p.lastnames} ${p.names}\nCI: ${p.ci ?? "--"}\nPuntos: ${p.points ?? 0}?`,
+      `¿Seguro que deseas agregar a:\n\n${p.lastnames} ${p.names}\nCI: ${p.ci ?? "--"}\nPuntos: ${
+        p.points ?? 0
+      }?`,
       [
         { text: "Cancelar", style: "cancel" },
         { text: "Agregar", onPress: () => onAdd(p.user_id) },
@@ -180,7 +188,6 @@ function getInitials(p: { names: string; lastnames: string }) {
         {teamName || "Jugadores"}
       </SizableText>
 
-      {/* Lista jugadores (LISTA, no tarjetas) */}
       {loading ? (
         <YStack height={160} alignItems="center" justifyContent="center">
           <ActivityIndicator />
@@ -194,9 +201,7 @@ function getInitials(p: { names: string; lastnames: string }) {
           <FlatList
             data={players}
             keyExtractor={(item) => item.user_id}
-            ItemSeparatorComponent={() => (
-              <View style={{ height: 1, backgroundColor: "#eee" }} />
-            )}
+            ItemSeparatorComponent={() => <View style={{ height: 1, backgroundColor: "#eee" }} />}
             renderItem={({ item }) => (
               <XStack padding={12} alignItems="center" justifyContent="space-between" gap={10}>
                 <YStack flex={1} gap={4}>
@@ -254,115 +259,110 @@ function getInitials(p: { names: string; lastnames: string }) {
           </View>
 
           {loadingAvail ? (
-  <YStack height={120} alignItems="center" justifyContent="center">
-    <ActivityIndicator />
-  </YStack>
-) : available.length === 0 ? (
-  <YStack height={120} alignItems="center" justifyContent="center">
-    <SizableText opacity={0.7}>No hay jugadores disponibles.</SizableText>
-  </YStack>
-) : (
-  <YStack gap={10} flex={1}>
-    {/* mini header bonito */}
-    <XStack alignItems="center" justifyContent="space-between">
-      <SizableText opacity={0.7}>
-        {available.length} disponibles
-      </SizableText>
-      <SizableText opacity={0.6} fontSize={12}>
-        Toca uno para agregar
-      </SizableText>
-    </XStack>
-
-    <FlatList
-      data={available}
-      keyExtractor={(item) => item.user_id}
-      contentContainerStyle={{ paddingBottom: 24, gap: 10 }}
-      renderItem={({ item }) => (
-        <OurTouchable onPress={() => confirmAdd(item)}>
-          <OurCard
-            style={{
-              padding: 12,
-              borderRadius: 16,
-              borderWidth: 1,
-              borderColor: "#eee",
-              backgroundColor: "white",
-              gap: 10,
-            }}
-          >
-            <XStack alignItems="center" justifyContent="space-between" gap={12}>
-              {/* Avatar */}
-              <XStack
-                width={44}
-                height={44}
-                borderRadius={14}
-                backgroundColor="#f4f4f5"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <SizableText fontWeight="900" fontSize={16} opacity={0.85}>
-                  {getInitials(item)}
+            <YStack height={120} alignItems="center" justifyContent="center">
+              <ActivityIndicator />
+            </YStack>
+          ) : available.length === 0 ? (
+            <YStack height={120} alignItems="center" justifyContent="center">
+              <SizableText opacity={0.7}>No hay jugadores disponibles.</SizableText>
+            </YStack>
+          ) : (
+            <YStack gap={10} flex={1}>
+              <XStack alignItems="center" justifyContent="space-between">
+                <SizableText opacity={0.7}>{available.length} disponibles</SizableText>
+                <SizableText opacity={0.6} fontSize={12}>
+                  Toca uno para agregar
                 </SizableText>
               </XStack>
 
-              {/* Info */}
-              <YStack flex={1} gap={6}>
-                <SizableText fontWeight="900" fontSize={14} numberOfLines={1}>
-                  {item.lastnames} {item.names}
-                </SizableText>
+              <FlatList
+                data={available}
+                keyExtractor={(item) => item.user_id}
+                contentContainerStyle={{ paddingBottom: 24, gap: 10 }}
+                renderItem={({ item }) => (
+                  <OurTouchable onPress={() => confirmAdd(item)}>
+                    <OurCard
+                      style={{
+                        padding: 12,
+                        borderRadius: 16,
+                        borderWidth: 1,
+                        borderColor: "#eee",
+                        backgroundColor: "white",
+                        gap: 10,
+                      }}
+                    >
+                      <XStack alignItems="center" justifyContent="space-between" gap={12}>
+                        {/* Avatar */}
+                        <XStack
+                          width={44}
+                          height={44}
+                          borderRadius={14}
+                          backgroundColor="#f4f4f5"
+                          alignItems="center"
+                          justifyContent="center"
+                        >
+                          <SizableText fontWeight="900" fontSize={16} opacity={0.85}>
+                            {getInitials(item)}
+                          </SizableText>
+                        </XStack>
 
-                <XStack gap={8} alignItems="center" flexWrap="wrap">
-                  {/* CI chip */}
-                  <XStack
-                    paddingHorizontal={10}
-                    paddingVertical={4}
-                    borderRadius={999}
-                    backgroundColor="#f7f7f7"
-                    borderWidth={1}
-                    borderColor="#eee"
-                    alignItems="center"
-                  >
-                    <SizableText fontSize={12} opacity={0.75}>
-                      CI: {item.ci ?? "--"}
-                    </SizableText>
-                  </XStack>
+                        {/* Info */}
+                        <YStack flex={1} gap={6}>
+                          <SizableText fontWeight="900" fontSize={14} numberOfLines={1}>
+                            {item.lastnames} {item.names}
+                          </SizableText>
 
-                  {/* Pts chip */}
-                  <XStack
-                    paddingHorizontal={10}
-                    paddingVertical={4}
-                    borderRadius={999}
-                    backgroundColor="#f1f8ff"
-                    borderWidth={1}
-                    borderColor="#dbeafe"
-                    alignItems="center"
-                  >
-                    <SizableText fontSize={12} opacity={0.85} fontWeight="800">
-                      {item.points ?? 0} pts
-                    </SizableText>
-                  </XStack>
-                </XStack>
-              </YStack>
+                          <XStack gap={8} alignItems="center" flexWrap="wrap">
+                            <XStack
+                              paddingHorizontal={10}
+                              paddingVertical={4}
+                              borderRadius={999}
+                              backgroundColor="#f7f7f7"
+                              borderWidth={1}
+                              borderColor="#eee"
+                              alignItems="center"
+                            >
+                              <SizableText fontSize={12} opacity={0.75}>
+                                CI: {item.ci ?? "--"}
+                              </SizableText>
+                            </XStack>
 
-              {/* Botón + */}
-              <XStack
-                width={38}
-                height={38}
-                borderRadius={14}
-                backgroundColor="#eafff1"
-                alignItems="center"
-                justifyContent="center"
-                borderWidth={1}
-                borderColor="#b7f7cf"
-              >
-                <Ionicons name="add" size={22} color="#16a34a" />
-              </XStack>
-            </XStack>
-          </OurCard>
-        </OurTouchable>
-      )}
-    />
-  </YStack>
-)}
+                            <XStack
+                              paddingHorizontal={10}
+                              paddingVertical={4}
+                              borderRadius={999}
+                              backgroundColor="#f1f8ff"
+                              borderWidth={1}
+                              borderColor="#dbeafe"
+                              alignItems="center"
+                            >
+                              <SizableText fontSize={12} opacity={0.85} fontWeight="800">
+                                {item.points ?? 0} pts
+                              </SizableText>
+                            </XStack>
+                          </XStack>
+                        </YStack>
+
+                        {/* Botón + */}
+                        <XStack
+                          width={38}
+                          height={38}
+                          borderRadius={14}
+                          backgroundColor="#eafff1"
+                          alignItems="center"
+                          justifyContent="center"
+                          borderWidth={1}
+                          borderColor="#b7f7cf"
+                        >
+                          <Ionicons name="add" size={22} color="#16a34a" />
+                        </XStack>
+                      </XStack>
+                    </OurCard>
+                  </OurTouchable>
+                )}
+              />
+            </YStack>
+          )}
         </YStack>
       </Modal>
     </YStack>

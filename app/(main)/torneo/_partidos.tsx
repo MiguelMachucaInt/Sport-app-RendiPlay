@@ -39,27 +39,22 @@ function PartidosTab() {
 		}
 	}
 
-	// Ordena los partidos por fecha (más reciente primero)
 	const sortedData = useMemo(() => {
 		if (!data) return []
 		return [...data].sort((a, b) => {
 			const dateA = new Date(a.matchdate).getTime()
 			const dateB = new Date(b.matchdate).getTime()
-			return dateB - dateA // Orden descendente
+			return dateB - dateA
 		})
 	}, [data])
 
 	const filteredData = useMemo(() => {
 		let result = sortedData
-
-		// aplicar filtro por estado
 		if (filterType === 'pending') {
 			result = result.filter((m) => m.state !== 'F')
 		} else if (filterType === 'finished') {
 			result = result.filter((m) => m.state === 'F')
 		}
-
-		// aplicar búsqueda
 		if (searchQuery) {
 			const term = searchQuery.toLowerCase()
 			result = result.filter(
@@ -74,7 +69,6 @@ function PartidosTab() {
 
 	return !isLoading && !refreshing ? (
 		<YStack style={{ marginBottom: 240 }}>
-			{/* Botones de filtro */}
 			<View
 				style={{
 					flexDirection: 'row',
@@ -151,6 +145,7 @@ function PartidosTab() {
 						<CardPartidos
 							key={partido.match_id}
 							fechaPartido={partido.matchdate}
+							horaPartido={partido.program_date}
 							equipo1={partido.team1}
 							equipo2={partido.team2}
 							walkover={partido.walkover}
@@ -159,6 +154,7 @@ function PartidosTab() {
 							puntosElo={partido.elo_points}
 							categoria={partido.category_desc}
 							state={item.state}
+							field={partido.field}
 						/>
 					)
 				}}

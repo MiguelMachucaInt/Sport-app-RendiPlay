@@ -7,7 +7,10 @@ class GeneralService extends Service {
 			.request<UserSports>({
 				url: 'app-user-sports'
 			})
-			.then((res) => res.data)
+			.then((res) => {
+				console.log('getHomeUserSports response:', res.data)
+				return res.data
+			})
 	}
 }
 export default new GeneralService('')
