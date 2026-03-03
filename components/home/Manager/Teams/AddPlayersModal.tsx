@@ -49,7 +49,7 @@ export default function AddPlayersModal({
   scope,
   onAdded,
 }: Props) {
-  const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets(); 
 
   const [search, setSearch] = useState("");
   const [available, setAvailable] = useState<AvailablePlayer[]>([]);
@@ -85,7 +85,7 @@ export default function AddPlayersModal({
   async function onAdd(userId: string) {
     await TeamsAccessService.addPlayer(scope, teamId, tournamentId, userId);
     await Promise.all([onAdded(), loadAvailable(search)]);
-    showToast("Jugador agregado ✅");
+    showToast("Solicitud Enviada ✅");
   }
 
   function confirmAdd(p: AvailablePlayer) {

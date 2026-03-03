@@ -9,78 +9,74 @@ import { Tabs, usePathname } from 'expo-router'
 
 interface HomeLayoutProps {}
 function HomeLayout({ ...props }: Readonly<HomeLayoutProps>) {
-	const { user } = useAuthStore()
-	const pathname = usePathname()
-	const showOverlay = user?.blocked && pathname !== '/'
-const isManager = !!user?.roles?.includes('Manager')
-	return (
-		<ProtectedRoute redirectTo={'/(main)/(home)'}>
-			<Tabs
-				screenOptions={{
-					headerShown: false,
-					sceneStyle: {
-						backgroundColor: 'transparent'
-					},
-					tabBarActiveTintColor: colors.primary.naranja
-				}}
-			>
-				<Tabs.Screen
-					name="index"
-					options={{
-						title: 'INICIO',
-						tabBarIcon: ({ color }) => (
-							<FontAwesome name="home" size={24} color={color} />
-						)
-					}}
-				/>
-				<Tabs.Screen
-					name="campeonato"
-					options={{
-						title: 'TORNEOS',
-						href: user ? '/(main)/(home)/campeonato' : null,
-						tabBarIcon: ({ color }) => (
-							<FontAwesome6
-								name="trophy"
-								size={20}
-								color={color}
-							/>
-						)
-					}}
-				/>
-<Tabs.Screen
-  name="manager"
-  options={{
-    title: 'EQUIPOS',
-    href: isManager ? '/(main)/(home)/manager' : null, 
-    tabBarIcon: ({ color }) => (
-      <FontAwesome6 name="people-group" size={20} color={color} />
-    ),
-  }}
-/>
-				<Tabs.Screen
-					name="perfil"
-					options={{
-						title: 'PERFIL',
-						href: user ? '/(main)/(home)/perfil' : null,
-						tabBarIcon: ({ color }) => (
-							<FontAwesome6
-								name="user-gear"
-								size={20}
-								color={color}
-							/>
-						)
-					}}
-				/>
-				<Tabs.Screen
-					name="[id]"
-					options={{
-						href: null
-					}}
-				/>
-			</Tabs>
-			<BlockedOverlay show={showOverlay} />
-		</ProtectedRoute>
-	)
+  const { user } = useAuthStore()
+  const pathname = usePathname()
+  const showOverlay = user?.blocked && pathname !== '/'
+
+  const roles = user?.roles ?? []
+  const canSeeTeams = roles.includes('Manager') || roles.includes('Owner')
+
+  return (
+    <ProtectedRoute redirectTo={'/(main)/(home)'}>
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          sceneStyle: { backgroundColor: 'transparent' },
+          tabBarActiveTintColor: colors.primary.naranja
+        }}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'INICIO',
+            tabBarIcon: ({ color }) => (
+              <FontAwesome name="home" size={24} color={color} />
+            )
+          }}
+        />
+
+        <Tabs.Screen
+          name="campeonato"
+          options={{
+            title: 'TORNEOS',
+            href: user ? '/(main)/(home)/campeonato' : null,
+            tabBarIcon: ({ color }) => (
+              <FontAwesome6 name="trophy" size={20} color={color} />
+            )
+          }}
+        />
+
+        <Tabs.Screen
+          name="manager"
+          options={{
+            title: 'EQUIPOS',
+            href: canSeeTeams ? '/(main)/(home)/manager' : null, 
+            tabBarIcon: ({ color }) => (
+              <FontAwesome6 name="people-group" size={20} color={color} />
+            )
+          }}
+        />
+
+        <Tabs.Screen
+          name="perfil"
+          options={{
+            title: 'PERFIL',
+            href: user ? '/(main)/(home)/perfil' : null,
+            tabBarIcon: ({ color }) => (
+              <FontAwesome6 name="user-gear" size={20} color={color} />
+            )
+          }}
+        />
+
+        <Tabs.Screen
+          name="[id]"
+          options={{ href: null }}
+        />
+      </Tabs>
+
+      <BlockedOverlay show={showOverlay} />
+    </ProtectedRoute>
+  )
 }
 
 export default HomeLayout

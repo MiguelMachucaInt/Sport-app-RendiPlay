@@ -5,7 +5,7 @@ export default {
     "name": "RendiPlay",
     "description": "Aplicación para la gestión de eventos deportivos",
     "slug": "sport-app",
-    "version": "1.0.22",
+    "version": "1.0.26",
     "owner": "integgreteam",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
