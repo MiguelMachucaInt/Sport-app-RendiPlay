@@ -5,7 +5,7 @@ export default {
     "name": "RendiPlay",
     "description": "Aplicación para la gestión de eventos deportivos",
     "slug": "sport-app",
-    "version": "1.0.26",
+    "version": "1.0.29",
     "owner": "integgreteam",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -25,6 +25,7 @@ export default {
     },
     "android": {
       "package": "com.integgre.rendiplay",
+      "googleServicesFile": "./google-services.json",
       "usesCleartextTraffic": true,
       "edgeToEdgeEnabled": true,
       "intentFilters": [
@@ -44,20 +45,22 @@ export default {
       "output": "server",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "image": "./assets/images/logo.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
-        }
-      ],
-      "expo-web-browser",
-      "expo-apple-authentication"
-    ],
+plugins: [
+  "expo-router",
+  "@react-native-firebase/app",
+  "@react-native-firebase/crashlytics",
+  [
+    "expo-splash-screen",
+    {
+      image: "./assets/images/logo.png",
+      imageWidth: 200,
+      resizeMode: "contain",
+      backgroundColor: "#ffffff",
+    },
+  ],
+  "expo-web-browser",
+  "expo-apple-authentication",
+],
     "experiments": {
       "typedRoutes": true
     },

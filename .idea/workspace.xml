@@ -5,32 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2fcaea13-f1ce-40ec-8f3c-49d567acd3f2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/components/home/Manager/Teams/TeamsList.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/components/home/Manager/Teams/TeamsScreen.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/tournaments.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/(home)/campeonato.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/(home)/campeonato.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/(home)/manager.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/(home)/manager.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/manager/[teamId].tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/manager/[teamId].tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/(main)/torneo/_partidos.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/(main)/torneo/_partidos.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Ranking/Tables/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Ranking/Tables/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Ranking/Tables/rankingRow.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Ranking/Tables/rankingRow.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/Torneo/Partidos/CardPartidos/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/Torneo/Partidos/CardPartidos/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/header/menuIcon.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/header/menuIcon.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/home/Eventos/EventoSportCard/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/home/Eventos/EventoSportCard/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/home/Eventos/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/home/Eventos/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/home/Manager/ManagerCard/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/home/Manager/ManagerCard/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/home/Manager/Teams/AddPlayersModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/home/Manager/Teams/AddPlayersModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/home/Manager/Teams/TeamsPlayerList.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/home/Manager/Teams/TeamsPlayerList.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components/home/Manager/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/components/home/Manager/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/manager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/models/manager.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/match.ts" beforeDir="false" afterPath="$PROJECT_DIR$/models/match.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/general.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/general.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/manager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/manager.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/rating.ts" beforeDir="false" afterPath="$PROJECT_DIR$/services/rating.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/_layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/app/_layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/state/auth.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/state/auth.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +25,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Albert-CP"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/MiguelMachucaInt/Sport-app-RendiPlay.git",
+    "accountId": "db913de4-8a02-4c2d-aec6-7f53e8f4c18b"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
   &quot;associatedIndex&quot;: 0
@@ -52,22 +46,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;AnalyzeApkAction.lastApkPath&quot;: &quot;C:/movile/sport_app_f-dev/android/app/build/outputs/bundle/release/app-release.aab&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;miguel-dev&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/movile/sport_app_f-dev&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "AnalyzeApkAction.lastApkPath": "C:/movile/sport_app_f-dev/android/app/build/outputs/bundle/release/app-release.aab",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "albert-dev",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/dev/Sport",
+    "settings.editor.selected.configurable": "AndroidSdkUpdater"
   }
-}</component>
+}]]></component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="2fcaea13-f1ce-40ec-8f3c-49d567acd3f2" name="Changes" comment="" />

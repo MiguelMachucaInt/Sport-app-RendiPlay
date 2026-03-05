@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "244660503773",
+    "project_id": "rendiplay",
+    "storage_bucket": "rendiplay.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:244660503773:android:c77d2d5bf3302f39190734",
+        "android_client_info": {
+          "package_name": "com.integgre.rendiplay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4KB0eUJViKI8Tojw5JktJFJ7dgyljVNg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import Loading from '@/components/Loading'
 import { AuthProviderHandler } from '@/controllers/authController'
 import { useOurToast } from '@/hooks/useOurToast'
@@ -16,6 +17,7 @@ import {
 } from 'react'
 import { useLoading } from './loading'
 import { jwtDecode } from "jwt-decode";
+import crashlytics from '@react-native-firebase/crashlytics'
 
 interface IAuthContext {
 	user: AuthUser | null
@@ -137,6 +139,16 @@ type AppTokenPayload = {
 		await saveTokens(user.access_token, user.refresh_token)
 		const payload = jwtDecode<AppTokenPayload>(user.access_token);
 		const roles = payload?.roles ?? [];
+		if (!__DEV__) {
+    try {
+      crashlytics().setUserId(user.user_id)
+      crashlytics().setAttributes({
+        provider: String(provider ?? ''),
+        roles: roles.join(',').slice(0, 100),
+        mail: String(user.mail ?? '').slice(0, 80),
+      })
+    } catch {}
+  }
 		setUser({
 			...pick(user, [
 				'document_number',
