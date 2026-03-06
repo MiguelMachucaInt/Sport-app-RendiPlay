@@ -162,7 +162,9 @@ function CardPartidos({
     ]}
   >
     {horaFormateada}
-    {field ? ` - Cancha ${field}` : ''}
+    {field !== undefined && field !== null && String(field).trim() !== ''
+  ? ` - ${String(field).trim()}`
+  : ''}
   </Text>
 )}
 				</YStack>

@@ -5,7 +5,7 @@ export default {
     "name": "RendiPlay",
     "description": "Aplicación para la gestión de eventos deportivos",
     "slug": "sport-app",
-    "version": "1.0.29",
+    "version": "1.0.30",
     "owner": "integgreteam",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -15,6 +15,7 @@ export default {
     "ios": {
       "bundleIdentifier": "com.integgre.sportapp",
       "supportsTablet": false,
+      googleServicesFile: "./GoogleService-Info.plist",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "NSAppTransportSecurity": {
