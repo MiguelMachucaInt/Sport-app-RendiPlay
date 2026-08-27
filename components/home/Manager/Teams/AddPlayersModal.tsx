@@ -24,6 +24,14 @@ function showToast(msg: string) {
   else Alert.alert("Info", msg);
 }
 
+function getErrorMessage(error: unknown) {
+  const message = (error as any)?.response?.data?.message;
+  if (Array.isArray(message)) return message.join("\n");
+  return typeof message === "string"
+    ? message
+    : "No se pudo enviar la solicitud. Intenta nuevamente.";
+}
+
 function getInitials(p: { names: string; lastnames: string }) {
   const a = (p.names?.trim()?.[0] ?? "").toUpperCase();
   const b = (p.lastnames?.trim()?.[0] ?? "").toUpperCase();
@@ -83,9 +91,13 @@ export default function AddPlayersModal({
   }, [search, open, scope]);
 
   async function onAdd(userId: string) {
-    await TeamsAccessService.addPlayer(scope, teamId, tournamentId, userId);
-    await Promise.all([onAdded(), loadAvailable(search)]);
-    showToast("Solicitud Enviada ✅");
+    try {
+      await TeamsAccessService.addPlayer(scope, teamId, tournamentId, userId);
+      await Promise.all([onAdded(), loadAvailable(search)]);
+      showToast("Solicitud Enviada ✅");
+    } catch (error) {
+      showToast(getErrorMessage(error));
+    }
   }
 
   function confirmAdd(p: AvailablePlayer) {
@@ -93,7 +105,7 @@ export default function AddPlayersModal({
       "Agregar jugador",
       `¿Seguro que deseas agregar a:\n\n${p.lastnames} ${p.names}\nCI: ${
         p.ci ?? "--"
-      }\nPuntos: ${p.points ?? 0}?`,
+      }\nCategoría: ${p.category_desc ?? "Sin categoría"}\nPuntos: ${p.points ?? 0}?`,
       [
         { text: "Cancelar", style: "cancel" },
         { text: "Agregar", onPress: () => onAdd(p.user_id) },
@@ -200,6 +212,22 @@ export default function AddPlayersModal({
                           </SizableText>
 
                           <XStack gap={8} alignItems="center" flexWrap="wrap">
+                            {item.category_desc ? (
+                              <XStack
+                                paddingHorizontal={10}
+                                paddingVertical={4}
+                                borderRadius={999}
+                                backgroundColor="#fff7ed"
+                                borderWidth={1}
+                                borderColor="#fed7aa"
+                                alignItems="center"
+                              >
+                                <SizableText fontSize={12} opacity={0.85} fontWeight="800">
+                                  {item.category_desc}
+                                </SizableText>
+                              </XStack>
+                            ) : null}
+
                             <XStack
                               paddingHorizontal={10}
                               paddingVertical={4}

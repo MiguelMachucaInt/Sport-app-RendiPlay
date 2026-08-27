@@ -24,7 +24,7 @@ export default function ProfileScreen() {
 	})
 
 	function handleRefresh() {
-		setRefreshing(false)
+		setRefreshing(true)
 		refetch().finally(() => setRefreshing(false))
 	}
 
@@ -74,6 +74,30 @@ export default function ProfileScreen() {
 						{data?.cellphone}
 					</Text>
 				</View>
+			</VStack>
+			<VStack style={stylesProfile.sectionContainer}>
+				<Text style={stylesProfile.title}>Mis Categorías</Text>
+			</VStack>
+			<VStack style={stylesProfile.dataContainer}>
+				{data?.categories?.length ? (
+					data.categories.map((category) => (
+						<View
+							key={category.category_id}
+							style={stylesProfile.dataRow}
+						>
+							<Text style={stylesProfile.dataLabel}>
+								{category.sport_desc ?? 'Deporte'}
+							</Text>
+							<Text style={stylesProfile.dataValue}>
+								{category.category_desc}
+							</Text>
+						</View>
+					))
+				) : (
+					<Text style={stylesProfile.dataValue}>
+						Sin categoría asignada
+					</Text>
+				)}
 			</VStack>
 			<VStack style={stylesProfile.sectionContainer}>
 				<Text style={stylesProfile.title}>Progreso Elo</Text>

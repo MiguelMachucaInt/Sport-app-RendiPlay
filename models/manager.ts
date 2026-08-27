@@ -16,6 +16,8 @@ export type TeamPlayer = {
   lastnames: string
   ci?: string | null
   points: number
+  category_id?: string | null
+  category_desc?: string | null
 }
 
 export type AvailablePlayer = TeamPlayer

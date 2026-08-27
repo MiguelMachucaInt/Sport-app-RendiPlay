@@ -2,6 +2,16 @@ import { Match } from './match'
 import { Sport, SportPoint } from './sport'
 import { Tournament } from './tournament'
 
+export interface UserCategory {
+	user_id: string
+	category_id: string
+	category_desc: string
+	sport_id?: string | null
+	sport_desc?: string | null
+	level_desc?: string | null
+	branch_desc?: string | null
+}
+
 export interface UserSports {
 	user_id: string
 	names: string
@@ -23,6 +33,8 @@ export interface UserSports {
 	sports_points: SportPoint[]
 	sports: Sport[]
 	SportVictories: any[]
+	categories: UserCategory[]
+	history: any[]
 	
 }
 
