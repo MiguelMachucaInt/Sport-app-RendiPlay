@@ -6,6 +6,7 @@ import { Image } from "react-native";
 import { router } from "expo-router";
 import type { ManagerTeam } from "@/models/manager";
 import type { TeamsScope } from "@/services/manager";
+import { API_BASE_URL } from "@/constants/app";
 
 type Props = {
   team: ManagerTeam;
@@ -21,7 +22,7 @@ function toImageUri(value?: string | null) {
   if (value.startsWith("data:image/")) return value;
 
   if (UUID_RE.test(value)) {
-    const API = (process.env.EXPO_PUBLIC_API_BASE_URL ?? "").replace(/\/+$/, "");
+    const API = (API_BASE_URL ?? "").replace(/\/+$/, "");
     if (!API) return null;
     return `${API}/resource/${value}`;
   }

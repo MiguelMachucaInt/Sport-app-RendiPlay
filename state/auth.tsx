@@ -17,7 +17,11 @@ import {
 } from 'react'
 import { useLoading } from './loading'
 import { jwtDecode } from "jwt-decode";
-import crashlytics from '@react-native-firebase/crashlytics'
+import {
+	getCrashlytics,
+	setAttributes,
+	setUserId,
+} from '@react-native-firebase/crashlytics'
 
 interface IAuthContext {
 	user: AuthUser | null
@@ -141,8 +145,9 @@ type AppTokenPayload = {
 		const roles = payload?.roles ?? [];
 		if (!__DEV__) {
     try {
-      crashlytics().setUserId(user.user_id)
-      crashlytics().setAttributes({
+      const crashlytics = getCrashlytics()
+      void setUserId(crashlytics, user.user_id)
+      void setAttributes(crashlytics, {
         provider: String(provider ?? ''),
         roles: roles.join(',').slice(0, 100),
         mail: String(user.mail ?? '').slice(0, 80),

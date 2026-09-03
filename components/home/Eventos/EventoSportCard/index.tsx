@@ -8,15 +8,13 @@ import { SizableText } from '@tamagui/text'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Dimensions, Text, Image } from 'react-native'
 import SportIcon from '../../Rankings/Sport'
-import Constants from 'expo-constants'
+import { API_BASE_URL } from '@/constants/app'
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function getApiBaseUrl() {
-  const envUrl = process.env.EXPO_PUBLIC_API_BASE_URL;
-  const extraUrl = (Constants.expoConfig?.extra as any)?.apiUrl;
-  const base = (envUrl || extraUrl || "").trim();
+  const base = (API_BASE_URL || "").trim();
   return base.replace(/\/+$/, "");
 }
 

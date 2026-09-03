@@ -4,7 +4,7 @@ import AntDesign from '@expo/vector-icons/AntDesign'
 import { AuthSessionResult, makeRedirectUri, useAuthRequest } from 'expo-auth-session'
 import { usePathname } from 'expo-router'
 import { useEffect } from 'react'
-import { Platform } from 'react-native'
+import { Alert, Platform } from 'react-native'
 import OurButton from './ui/ourButton'
 
 export interface SignInButtonProps<T = any> {
@@ -37,8 +37,32 @@ function GoogleSignInButton({ onPress, onResponded, show = true }: Readonly<Goog
     }
 
     useEffect(() => {
-        handleResponse()
+        void handleResponse()
     }, [response])
+
+    async function startGoogleSignIn() {
+        if (!request) {
+            Alert.alert(
+                'Inicio de sesión',
+                'Google todavía se está preparando. Intenta nuevamente en unos segundos.'
+            )
+            return
+        }
+
+        try {
+            if (onPress) onPress()
+            await promptAsync()
+        } catch (error) {
+            console.error('🔴 [Google Auth] No se pudo abrir la autenticación:', error)
+            Alert.alert(
+                'No se pudo iniciar sesión',
+                'No fue posible abrir Google. Verifica tu conexión e intenta nuevamente.'
+            )
+            if (onResponded) {
+                onResponded({ type: 'error', error } as unknown as AuthSessionResult)
+            }
+        }
+    }
 
     return show ? (
         <OurButton
@@ -49,12 +73,9 @@ function GoogleSignInButton({ onPress, onResponded, show = true }: Readonly<Goog
             containerProps={{
                 alignItems: 'center'
             }}
-            onPress={() => {
-                if (onPress) onPress()
-                if (request) promptAsync()
-            }}
+            onPress={() => void startGoogleSignIn()}
         >
-            Iniciar Sesión con Google
+            {request ? 'Iniciar Sesión con Google' : 'Preparando Google...'}
         </OurButton>
     ) : null
 }

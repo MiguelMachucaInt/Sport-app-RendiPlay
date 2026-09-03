@@ -4,13 +4,33 @@ import AntDesign from '@expo/vector-icons/AntDesign'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { router } from 'expo-router'
+import { ReactNode, useState } from 'react'
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 import IconButton from '../ui/IconButton'
-import { Menu, MenuItem, MenuItemLabel, MenuSeparator } from '../ui/menu'
 
-interface UserMenuIconProps {}
+interface MenuOptionProps {
+  icon: ReactNode
+  label: string
+  onPress: () => void
+}
 
-function UserMenuIcon({ ...props }: Readonly<UserMenuIconProps>) {
+function MenuOption({ icon, label, onPress }: Readonly<MenuOptionProps>) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      onPress={onPress}
+      style={({ pressed }) => [styles.option, pressed && styles.optionPressed]}
+    >
+      {icon}
+      <Text style={styles.optionLabel}>{label}</Text>
+    </Pressable>
+  )
+}
+
+function UserMenuIcon() {
   const { signOut, user } = useAuthStore()
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const roles = (user?.roles ?? []).map((r: any) => String(r))
   const isManager = roles.includes('Manager')
@@ -33,101 +53,117 @@ function UserMenuIcon({ ...props }: Readonly<UserMenuIconProps>) {
     })
   }
 
+  const closeThen = (action: () => void) => {
+    setMenuOpen(false)
+    requestAnimationFrame(action)
+  }
+
+  if (!user) {
+    return (
+      <IconButton
+        icon={<AntDesign name="user" size={24} color="white" />}
+        touchableProps={{
+          onPress: () => router.push('/auth'),
+          accessibilityRole: 'button',
+          accessibilityLabel: 'Iniciar sesión',
+        }}
+      />
+    )
+  }
+
   return (
-    <Menu
-      placement="bottom"
-      offset={5}
-      trigger={({ ...triggerProps }) => {
-        return (
-          <IconButton
-            icon={<AntDesign name="user" size={24} color="white" />}
-            touchableProps={{
-              ...triggerProps,
-            }}
-          />
-        )
-      }}
-      style={{ width: 150 }}
-    >
-      {user ? (
-        <>
-          <MenuItem
-            key="Perfil"
-            textValue="Perfil"
-            style={{ gap: 7 }}
-            onPress={() => router.push('/perfil')}
-          >
-            <FontAwesome6
-              name="user-gear"
-              size={20}
-              color={colors.primary.naranja}
+    <>
+      <IconButton
+        icon={<AntDesign name="user" size={24} color="white" />}
+        touchableProps={{
+          onPress: () => setMenuOpen(true),
+          accessibilityRole: 'button',
+          accessibilityLabel: 'Abrir menú de usuario',
+        }}
+      />
+
+      <Modal
+        animationType="fade"
+        onRequestClose={() => setMenuOpen(false)}
+        statusBarTranslucent
+        transparent
+        visible={menuOpen}
+      >
+        <Pressable style={styles.backdrop} onPress={() => setMenuOpen(false)}>
+          <Pressable style={styles.menu} onPress={(event) => event.stopPropagation()}>
+            <MenuOption
+              icon={<FontAwesome6 name="user-gear" size={20} color={colors.primary.naranja} />}
+              label="Perfil"
+              onPress={() => closeThen(() => router.push('/perfil'))}
             />
-            <MenuItemLabel size="md">Perfil</MenuItemLabel>
-          </MenuItem>
-
-          <MenuItem
-            key="MisTorneos"
-            textValue="Mis Torneos"
-            onPress={() => router.push('/(main)/(home)/campeonato')}
-            style={{ gap: 7 }}
-          >
-            <FontAwesome6
-              name="trophy"
-              size={20}
-              color={colors.primary.naranja}
+            <MenuOption
+              icon={<FontAwesome6 name="trophy" size={20} color={colors.primary.naranja} />}
+              label="Mis Torneos"
+              onPress={() => closeThen(() => router.push('/(main)/(home)/campeonato'))}
             />
-            <MenuItemLabel size="md">Mis Torneos</MenuItemLabel>
-          </MenuItem>
 
-          <MenuSeparator />
-
-          {canSeeTeams && (
-            <MenuItem
-              key="MisEquipos"
-              textValue="Mis Equipos"
-              onPress={goToTeams}
-              style={{ gap: 7 }}
-            >
-              <FontAwesome6
-                name="people-group"
-                size={20}
-                color={colors.primary.naranja}
+            {canSeeTeams && (
+              <MenuOption
+                icon={<FontAwesome6 name="people-group" size={20} color={colors.primary.naranja} />}
+                label="Mis Equipos"
+                onPress={() => closeThen(goToTeams)}
               />
-              <MenuItemLabel size="md">Mis Equipos</MenuItemLabel>
-            </MenuItem>
-          )}
+            )}
 
-          <MenuItem
-            key="CerrarSesion"
-            textValue="Cerrar sesión"
-            onPress={signOut}
-            style={{ gap: 3 }}
-          >
-            <Ionicons
-              name="log-out-outline"
-              size={24}
-              color={colors.primary.naranja}
+            <View style={styles.separator} />
+            <MenuOption
+              icon={<Ionicons name="log-out-outline" size={24} color={colors.primary.naranja} />}
+              label="Cerrar Sesión"
+              onPress={() => closeThen(() => void signOut())}
             />
-            <MenuItemLabel size="md">Cerrar Sesión</MenuItemLabel>
-          </MenuItem>
-        </>
-      ) : (
-        <MenuItem
-          key="IniciarSesion"
-          textValue="Iniciar sesión"
-          onPress={() => router.push('/auth')}
-          style={{ gap: 5 }}
-        >
-          <Ionicons
-            name="log-in-outline"
-            size={24}
-            color={colors.primary.naranja}
-          />
-          <MenuItemLabel size="md">Iniciar Sesión</MenuItemLabel>
-        </MenuItem>
-      )}
-    </Menu>
+          </Pressable>
+        </Pressable>
+      </Modal>
+    </>
   )
 }
+
+const styles = StyleSheet.create({
+  backdrop: {
+    alignItems: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.08)',
+    flex: 1,
+    paddingRight: 12,
+    paddingTop: 58,
+  },
+  menu: {
+    backgroundColor: 'white',
+    borderColor: '#E5E7EB',
+    borderRadius: 10,
+    borderWidth: 1,
+    elevation: 8,
+    minWidth: 190,
+    paddingVertical: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+  },
+  option: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 10,
+    minHeight: 46,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+  },
+  optionLabel: {
+    color: '#374151',
+    fontSize: 16,
+  },
+  optionPressed: {
+    backgroundColor: '#F3F4F6',
+  },
+  separator: {
+    backgroundColor: '#E5E7EB',
+    height: StyleSheet.hairlineWidth,
+    marginVertical: 4,
+  },
+})
 
 export default UserMenuIcon

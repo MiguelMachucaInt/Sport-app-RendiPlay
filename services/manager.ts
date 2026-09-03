@@ -1,5 +1,11 @@
 import { Service } from ".";
-import type { ManagerTeam, TeamPlayer, AvailablePlayer } from "@/models/manager";
+import type {
+  ManagerTeam,
+  TeamPlayer,
+  AvailablePlayer,
+  PlayerCandidatesResponse,
+  PlayerRequestResult,
+} from "@/models/manager";
 
 export type TeamsScope = "manager" | "owner";
 
@@ -45,10 +51,28 @@ class TeamsAccessService extends Service {
       .then((r) => r.data);
   }
 
+  async getPlayerCandidates(
+    scope: TeamsScope,
+    teamId: string,
+    tournamentId?: string,
+    search?: string,
+  ) {
+    const base = this.base(scope);
+    return this.requester
+      .request<PlayerCandidatesResponse>({
+        url: `${base}/teams/${teamId}/player-candidates`,
+        params: {
+          ...(tournamentId ? { tournamentId } : {}),
+          ...(search ? { search } : {}),
+        },
+      })
+      .then((r) => r.data);
+  }
+
   async addPlayer(scope: TeamsScope, teamId: string, tournamentId: string, userId: string) {
     const base = this.base(scope);
     return this.requester
-      .request({
+      .request<PlayerRequestResult>({
         url: `${base}/teams/${teamId}/players`,
         method: "POST",
         data: { tournament_id: tournamentId, user_id: userId },

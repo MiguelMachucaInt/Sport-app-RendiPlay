@@ -1,6 +1,5 @@
 import {
 	GOOGLE_CLIENT_ID,
-	GOOGLE_CLIENT_SECRET,
 	GOOGLE_REDIRECT_URI
 } from '@/constants/app'
 
@@ -15,6 +14,14 @@ export async function GET(request: Request) {
 			{ status: 400 }
 		)
 	}
+
+	const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET
+	if (!GOOGLE_CLIENT_ID || !googleClientSecret) {
+		return Response.json(
+			{ error: 'Google OAuth server credentials are not configured' },
+			{ status: 500 }
+		)
+	}
 	let [platform, state, redirectUri, from] =
 		combinedPlatformAndState.split('|')
 
@@ -27,7 +34,7 @@ export async function GET(request: Request) {
 		body: new URLSearchParams({
 			code,
 			client_id: GOOGLE_CLIENT_ID,
-			client_secret: GOOGLE_CLIENT_SECRET,
+			client_secret: googleClientSecret,
 			redirect_uri: GOOGLE_REDIRECT_URI,
 			grant_type: 'authorization_code'
 		}).toString()

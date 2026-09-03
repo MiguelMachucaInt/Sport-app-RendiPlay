@@ -13,7 +13,6 @@ export const API_AUTH_TOKEN = extraParams?.apiAuthToken
 export const GOOGLE_CLIENT_ID = extraParams?.googleWebClientId
 export const GOOGLE_REDIRECT_URI = `${HOST_URL}/api/auth/callback`
 export const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth'
-export const GOOGLE_CLIENT_SECRET = extraParams?.googleSecret
 
 // Apple OAuth Constants
 export const APPLE_CLIENT_ID = 'com.beto.expoauthexample.web'

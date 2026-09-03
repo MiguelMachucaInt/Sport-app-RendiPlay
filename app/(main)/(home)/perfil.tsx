@@ -76,7 +76,7 @@ export default function ProfileScreen() {
 				</View>
 			</VStack>
 			<VStack style={stylesProfile.sectionContainer}>
-				<Text style={stylesProfile.title}>Mis Categorías</Text>
+				<Text style={stylesProfile.title}>Categoría actual</Text>
 			</VStack>
 			<VStack style={stylesProfile.dataContainer}>
 				{data?.categories?.length ? (
